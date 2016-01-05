@@ -1,0 +1,26 @@
+{
+  apps: [
+  {
+    name: "DP-MEAN",
+    script: "node_modules/grunt-cli/bin/grunt",
+    env_production: {
+      NODE_ENV: "production"
+    },
+    env_development: {
+      NODE_ENV: "development"
+    }
+  }
+  ],
+  deploy: {
+    development: {
+      key: "./pem/dp-mean.pem",
+      user: "ubuntu",
+      host: "52.5.146.255",
+      ref: "origin/master",
+      repo: "git@bitbucket.org:cmodels/dp-mean-stack.git",
+      path: "/srv/dp-mean",
+      "pre-deploy": "",
+      "post-deploy": "sudo npm install; sudo bower install --allow-root; sudo pm2 startOrRestart ecosystem.json5 --env development"
+    }
+  }
+}
