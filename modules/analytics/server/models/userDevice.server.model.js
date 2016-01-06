@@ -35,7 +35,7 @@ var UserDeviceSchema = new Schema({
     type: String,
     trim: true,
     default: ''
-  }
+  },
   gender: {
     type: String
   },
