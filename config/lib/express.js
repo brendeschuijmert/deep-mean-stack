@@ -17,6 +17,7 @@ var config = require('../config'),
   helmet = require('helmet'),
   flash = require('connect-flash'),
   consolidate = require('consolidate'),
+  swaggerMiddleware = require('swagger-express-middleware'),
   path = require('path');
 
 /**
@@ -214,6 +215,22 @@ module.exports.configureSocketIO = function (app, db) {
 };
 
 /**
+ * init swagger middleware
+ */
+module.exports.initSwaggerMiddleware = function(app) {
+  swaggerMiddleware('./swagger/api.yml', app, function(err, middleware) {
+    app.use(
+      middleware.metadata(),
+      middleware.CORS(),
+      middleware.files(),
+      middleware.parseRequest(),
+      middleware.validateRequest(),
+      middleware.mock()
+    );
+  });
+};
+
+/**
  * Initialize the Express application
  */
 module.exports.init = function (db) {
@@ -228,7 +245,7 @@ module.exports.init = function (db) {
 
   // Initialize Express view engine
   this.initViewEngine(app);
-  
+
   // Initialize Helmet security headers
   this.initHelmetHeaders(app);
 
@@ -249,6 +266,9 @@ module.exports.init = function (db) {
 
   // Initialize error routes
   this.initErrorRoutes(app);
+
+  // Initialize swagger middleware
+  this.initSwaggerMiddleware(app);
 
   // Configure Socket.io
   app = this.configureSocketIO(app, db);

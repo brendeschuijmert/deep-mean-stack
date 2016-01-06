@@ -8,6 +8,7 @@ var _ = require('lodash'),
   testAssets = require('./config/assets/test'),
   testConfig = require('./config/env/test'),
   fs = require('fs'),
+  config = require('./config/config'),
   path = require('path');
 
 module.exports = function (grunt) {
@@ -72,6 +73,10 @@ module.exports = function (grunt) {
         options: {
           livereload: true
         }
+      },
+      swaggerDoc: {
+        files: 'swagger/api.yml',
+        tasks: ['swagger-doc']
       }
     },
     nodemon: {
@@ -296,6 +301,15 @@ module.exports = function (grunt) {
     });
   });
 
+  grunt.task.registerTask('swagger-doc', 'Generating yaml to json', function() {
+    var nativeObject = grunt.file.readYAML(path.resolve('./swagger/api.yml'));
+    var done = this.async();
+    if (config.url) {
+      nativeObject.host = config.url + (config.port?':' + config.port: '');
+    }
+    grunt.file.write(path.resolve('./public/api.json'), JSON.stringify(nativeObject));
+    done();
+  });
   // Lint CSS and JavaScript files.
   grunt.registerTask('lint', ['sass', 'less', 'jshint', 'eslint', 'csslint']);
 
@@ -311,11 +325,11 @@ module.exports = function (grunt) {
   grunt.registerTask('coverage', ['env:test', 'lint', 'mocha_istanbul:coverage', 'karma:unit']);
 
   // Run the project in development mode
-  grunt.registerTask('default', ['env:dev', 'lint', 'mkdir:upload', 'copy:localConfig', 'concurrent:default']);
+  grunt.registerTask('default', ['env:dev', 'lint', 'mkdir:upload', 'swagger-doc', 'copy:localConfig', 'concurrent:default']);
 
   // Run the project in debug mode
-  grunt.registerTask('debug', ['env:dev', 'lint', 'mkdir:upload', 'copy:localConfig', 'concurrent:debug']);
+  grunt.registerTask('debug', ['env:dev', 'lint', 'mkdir:upload', 'swagger-doc', 'copy:localConfig', 'concurrent:debug']);
 
   // Run the project in production mode
-  grunt.registerTask('prod', ['build', 'env:prod', 'mkdir:upload', 'copy:localConfig', 'concurrent:default']);
+  grunt.registerTask('prod', ['build', 'env:prod', 'mkdir:upload', 'swagger-doc', 'copy:localConfig', 'concurrent:default']);
 };
