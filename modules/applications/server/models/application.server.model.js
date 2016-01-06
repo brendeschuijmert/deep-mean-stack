@@ -44,6 +44,10 @@ var ApplicationSchema = new Schema({
     default: '',
     trim: true
   },
+  image: {
+    type: Schema.ObjectId,
+    ref: 'Image'
+  },
   user: {
     type: Schema.ObjectId,
     ref: 'User'

@@ -5,6 +5,8 @@
  */
 var path = require('path'),
   mongoose = require('mongoose'),
+  randomstring = require('randomstring'),
+  _ = require('lodash'),
   Application = mongoose.model('Application'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
@@ -13,6 +15,7 @@ var path = require('path'),
  */
 exports.create = function (req, res) {
   var application = new Application(req.body);
+  application.appToken = randomstring.generate(20);
   application.user = req.user;
 
   application.save(function (err) {
@@ -39,8 +42,11 @@ exports.read = function (req, res) {
 exports.update = function (req, res) {
   var application = req.application;
 
-  application.title = req.body.title;
-  application.content = req.body.content;
+  //TODO: Support for image
+  application = _.extend(
+    application,
+    _.pick(req.body, 'googleApiKey', 'googleApiSecret', 'appName', 'packageName')
+  );
 
   application.save(function (err) {
     if (err) {
@@ -74,7 +80,8 @@ exports.delete = function (req, res) {
  * List of Applications
  */
 exports.list = function (req, res) {
-  Application.find().sort('-created').populate('user', 'displayName').exec(function (err, applications) {
+  //TODO: support for UAC
+  Application.find().sort('-created').exec(function (err, applications) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -96,7 +103,7 @@ exports.applicationByID = function (req, res, next, id) {
     });
   }
 
-  Application.findById(id).populate('user', 'displayName').exec(function (err, application) {
+  Application.findById(id).exec(function (err, application) {
     if (err) {
       return next(err);
     } else if (!application) {
