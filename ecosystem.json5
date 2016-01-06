@@ -16,7 +16,7 @@
       key: "./pem/dp-mean.pem",
       user: "ubuntu",
       host: "52.5.146.255",
-      ref: "origin/master",
+      ref: "origin/dev",
       repo: "git@bitbucket.org:cmodels/dp-mean-stack.git",
       path: "/srv/dp-mean",
       "pre-deploy": "",
