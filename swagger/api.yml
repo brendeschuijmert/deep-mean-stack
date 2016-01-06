@@ -1,0 +1,59 @@
+swagger: '2.0'
+info:
+  title: DynamicPush MEAN API
+  description: DynamicPush API documentation for Node Express
+  version: 0.1.0
+host: localhost
+schemes:
+  - http
+basePath: /api
+produces:
+  - application/json
+paths:
+  /applications:
+    get:
+      summary: applications
+      description: |
+        Applications endpoint returns information about app added by the User
+      tags:
+        - Applications
+      responses:
+        '200':
+          description: An array of applications
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Application'
+        default:
+          description: Unexepected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Application:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: Application ID
+      appName:
+        type: string
+        description: Name of the application
+      packageName:
+        type: string
+        description: Mobile app package name
+      googleApiKey:
+        type: string
+        description: API Key used for GCM
+      googleApiSecret:
+        type: string
+        description: API Secret used for GCM
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string

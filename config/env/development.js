@@ -12,6 +12,7 @@ module.exports = {
     // Enable mongoose debug mode
     debug: process.env.MONGODB_DEBUG || false
   },
+  url: 'dev.dynamicpush.com',
   port: 80,
   log: {
     // logging with Morgan - https://github.com/expressjs/morgan
@@ -84,7 +85,7 @@ module.exports = {
       seedUser: {
         username: process.env.MONGO_SEED_USER_USERNAME || 'user',
         provider: 'local',
-        email: process.env.MONGO_SEED_USER_EMAIL || 'user@localhost.com',
+        email: process.env.MONGO_SEED_USER_EMAIL || 'user@dynamicpush.com',
         firstName: 'User',
         lastName: 'Local',
         displayName: 'User Local',

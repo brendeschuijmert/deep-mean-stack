@@ -1,6 +1,7 @@
 # OS
 # ===========
 .DS_Store
+._.*
 ehthumbs.db
 Icon?
 Thumbs.db
@@ -77,3 +78,6 @@ mongod
 # Pems Folder
 # =========
 pem/
+
+# api.json
+public/api.json
