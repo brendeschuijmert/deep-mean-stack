@@ -14,8 +14,10 @@ var path = require('path'),
  * Create a application
  */
 exports.create = function (req, res) {
-  var application = new Application(req.body);
-  application.appToken = randomstring.generate(20);
+  var appJson = _.pick(req.body, 'packageName', 'appName', 'googleApiKey', 'senderId');
+  var application = new Application(appJson);
+  application.apiSecret = randomstring.generate(20);
+  application.apiKey = randomstring.generate(20);
   application.user = req.user;
 
   application.save(function (err) {
@@ -45,7 +47,7 @@ exports.update = function (req, res) {
   //TODO: Support for image
   application = _.extend(
     application,
-    _.pick(req.body, 'googleApiKey', 'googleApiSecret', 'appName', 'packageName')
+    _.pick(req.body, 'googleApiKey', 'apiKey', 'apiSecret', 'packageName', 'senderId')
   );
 
   application.save(function (err) {

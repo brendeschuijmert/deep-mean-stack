@@ -27,9 +27,15 @@ var ApplicationSchema = new Schema({
     type: String,
     default: '',
     trim: true,
+    unique: 'Package name already exists',
     required: 'Package name can not be blank'
   },
-  appToken: {
+  apiKey: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  apiSecret: {
     type: String,
     default: '',
     trim: true
@@ -39,7 +45,7 @@ var ApplicationSchema = new Schema({
     default: '',
     trim: true
   },
-  googleApiSecret: {
+  senderId: {
     type: String,
     default: '',
     trim: true
