@@ -30,7 +30,7 @@ exports.authenticate = function (req, res) {
       throw {
         errors: {
           not_found: {
-              message: 'Application not found'
+            message: 'Application not found'
           }
         }
       };
