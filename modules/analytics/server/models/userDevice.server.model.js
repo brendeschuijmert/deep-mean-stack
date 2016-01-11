@@ -26,6 +26,8 @@ var UserDeviceSchema = new Schema({
     trim: true,
     default: ''
   },
+
+  // Personal Info
   email: {
     type: String,
     trim: true,
@@ -39,14 +41,16 @@ var UserDeviceSchema = new Schema({
   gender: {
     type: String
   },
-  location: {
-    lat: String,
-    lng: String
-  },
   language: {
     type: String,
     default: '',
     trim: true
+  },
+
+  // Location info
+  location: {
+    lat: String,
+    lng: String
   },
   country: {
     type: String,
@@ -73,18 +77,64 @@ var UserDeviceSchema = new Schema({
     trim: true,
     default: ''
   },
+
+  // device info
   osNumber: {
     type: String,
     trim: true,
     default: '',
     required: 'OS number is required'
   },
-  modelNumber: {
+  deviceVendor: {
+    type: String,
+    trim: true,
+    defualt: '',
+    required: 'Device Vendor is required'
+  },
+  deviceModel: {
     type: String,
     trim: true,
     default: '',
-    required: 'Model number is required'
-  }
+    required: 'Device Model is required'
+  },
+  devicePlatform: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  carrier: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  connectivityType: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+
+  // app info
+  sdkVersion: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  packageName: {
+    type: String,
+    trim: true,
+    default: '',
+  },
+  appVersion: {
+    type: String,
+    trim: true,
+    default: '',
+    required: 'App Version is required'
+  },
+  pushNotificationEnabled: {
+    type: Boolean,
+    default: true
+  },
+
 });
 
 mongoose.model('UserDevice', UserDeviceSchema);

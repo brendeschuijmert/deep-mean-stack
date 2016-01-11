@@ -10,9 +10,37 @@ basePath: /api
 produces:
   - application/json
 paths:
+  /auth/signin:
+    post:
+      summary: user sign in
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                example: user@dynamicpush.com
+              password:
+                type: string
+                example: qnxTzbSgCqycJHRV8S75DMmwH5gFrKuR
+      description: let the user sign in and have access to web apis
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: User
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /applications:
     get:
-      summary: applications
+      summary: list applications
       description: |
         Applications endpoint returns information about app added by the User
       tags:
@@ -28,6 +56,93 @@ paths:
           description: Unexepected error
           schema:
             $ref: '#/definitions/Error'
+    post:
+      summary: create application
+      parameters:
+        - name: body
+          description: json object for application
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              appName:
+                type: string
+                description: Name of the application
+                example: Paramount
+              packageName:
+                type: string
+                description: Mobile app package name
+                example: com.appelago.paramount
+              googleApiKey:
+                type: string
+                description: Google API Key used for push notifications
+                example: AIzaSyDhAtPeiK9i8fIUodzRuB2H7BLHFEbxOk8
+              senderId:
+                type: string
+                description: Used for create gcm token in mobile app
+                example: 525540592108
+      description: |
+        Create an application and generates apiKey and apiSecret
+      tags:
+        - Applications
+      responses:
+        '200':
+          description: Application
+          schema:
+            $ref: '#/definitions/Application'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /mobile/authenticate:
+    post:
+      summary: mobile sign in
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              apiKey:
+                type: string
+                example: Zk0C9607FNj9q6DHC1EV
+              apiSecret:
+                type: string
+                example: 7OwvXZ9H1vZtdrkrIWl7
+      description: |
+        Authenticate mobile app with api key and secret.
+        Returns sender id and token to use other mobile APIs.
+      tags:
+        - Mobile API
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /mobile/subscribe:
+    post:
+      summary: register app user
+      description: |
+        Registers app user with device info and gcm token
+      tags:
+        - Mobile API
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserDevice'
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
   Application:
     type: object
@@ -41,12 +156,73 @@ definitions:
       packageName:
         type: string
         description: Mobile app package name
+      apiKey:
+        type: string
+        description: Key used for mobile api
+      apiSecret:
+        type: string
+        description: Secret used for mobile api
       googleApiKey:
         type: string
-        description: API Key used for GCM
-      googleApiSecret:
+        description: Google API Key used for push notifications
+      senderId:
         type: string
-        description: API Secret used for GCM
+        description: Used for create gcm token in mobile app
+  User:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: User ID
+  UserDevice:
+    type: object
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      gender:
+        type: string
+        description: M/F
+      language:
+        type: string
+      location:
+        type: object
+        properties:
+          lat:
+            type: string
+          lng:
+            type: string
+      country:
+        type: string
+      address:
+        type: string
+      state:
+        type: string
+      city:
+        type: string
+      zipcode:
+        type: string
+      osNumber:
+        type: string
+      deviceVendor:
+        type: string
+      deviceModel:
+        type: string
+      devicePlatform:
+        type: string
+      carrier:
+        type: string
+      connectivityType:
+        type: string
+      sdkVersion:
+        type: string
+      packageName:
+        type: string
+      appVersion:
+        type: string
+      pushNotificationEnabled:
+        type: boolean
   Error:
     type: object
     properties:
