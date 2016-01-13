@@ -18,29 +18,27 @@ mongoose.Promise = require('bluebird');
  * Register App User
  */
 exports.register = function (req, res) {
-  // var appUser = new AppUser();
-  // var userDevice = new UserDevice(req.body);
+  var appUser = new AppUser();
+  var userDevice = new UserDevice(req.body);
   var application = req.decoded;
-  console.log(application);
-  res.json(application);
-  return;
+  appUser.application = application._id;
 
-  // // saving app user
-  // appUser.save().then(function(){
-  //   userDevice.appUser = appUser;
-  //
-  //   // now saving user device
-  //   return userDevice.save();
-  // }).then(function(){
-  //   appUser.userDevice = userDevice;
-  //
-  //   // link user device for app user
-  //   return appUser.save();
-  // }).then(function(){
-  //   res.json(appUser);
-  // }).catch(function(err){
-  //   res.status(400).send({
-  //     message: errorHandler.getErrorMessage(err);
-  //   });
-  // });
+  // saving app user
+  appUser.save().then(function(){
+    userDevice.appUser = appUser._id;
+
+    // now saving user device
+    return userDevice.save();
+  }).then(function(){
+    appUser.userDevice = userDevice._id;
+
+    // link user device for app user
+    return appUser.save();
+  }).then(function(){
+    res.json(appUser);
+  }).catch(function(err){
+    res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
+  });
 };

@@ -28,14 +28,9 @@ exports.authenticate = function (req, res) {
   .then(function(application){
     if (application === null) {
       throw {
-        errors: {
-          not_found: {
-            message: 'Application not found'
-          }
-        }
+        message: 'Application not found'
       };
     }
-    console.log(application);
     var appJson = _.pick(application, 'senderId', 'packageName');
     var token = jwt.sign(application, config.apiSessionSecret, {
       expiresIn: config.apiTokenExpire * 60
@@ -46,7 +41,6 @@ exports.authenticate = function (req, res) {
       token: token
     });
   }).catch(function(err){
-    console.log(JSON.stringify(err));
     res.status(400).send({
       message: errorHandler.getErrorMessage(err)
     });
