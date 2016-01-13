@@ -17,6 +17,10 @@ var AppUserSchema = new Schema({
   updated: {
     type: Date
   },
+  application: {
+    type: Schema.ObjectId,
+    ref: 'Application'
+  },
   userDevice: {
     type: Schema.ObjectId,
     ref: 'UserDevice'

@@ -143,6 +143,42 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /mobile/track_event:
+    post:
+      summary: track events from mobile app
+      description: |
+        Track events from mobile app.
+        userId field is required field and tracking event won't work if userId is not set.
+        userDevice field is optional and you can set only changed field. For example, when only location of user is changed,
+        userDevice: {
+          location: {
+            lat: '10.100000',
+            lng: '10.010000'
+          }
+        }
+      tags:
+        - Mobile API
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              userId:
+                type: string
+                example: 5695b0b389f3409e2986eee9
+              event:
+                $ref: '#/definitions/AnalyticEvent'
+              userDevice:
+                $ref: '#/definitions/UserDevice'
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
   Application:
     type: object
@@ -177,6 +213,8 @@ definitions:
   UserDevice:
     type: object
     properties:
+      gcmToken:
+        type: string
       email:
         type: string
       name:
@@ -223,6 +261,18 @@ definitions:
         type: string
       pushNotificationEnabled:
         type: boolean
+  AnalyticEvent:
+    type: object
+    properties:
+      eventType:
+        type: string
+        example: open
+      eventTarget:
+        type: string
+        example: app
+      eventValue:
+        type: string
+        example: test
   Error:
     type: object
     properties:

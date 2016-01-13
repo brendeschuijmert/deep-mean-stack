@@ -133,8 +133,7 @@ var UserDeviceSchema = new Schema({
   pushNotificationEnabled: {
     type: Boolean,
     default: true
-  },
-
+  }
 });
 
 mongoose.model('UserDevice', UserDeviceSchema);
