@@ -17,6 +17,11 @@ var CampaignSchema = new Schema({
   updated: {
     type: Date
   },
+  campaignType: {
+    type: String,
+    enum: ['url', 'deep-link', 'in-app-message'],
+    default: 'url'
+  },
   title: {
     type: String,
     trim: true,
@@ -27,9 +32,29 @@ var CampaignSchema = new Schema({
     trim: true,
     default: ''
   },
-  image: {
+  platform: [{
+    name: {
+      type: String
+    },
+    displayType: [{
+      type: String
+    }]
+  }],
+  animation: {
     type: Schema.ObjectId,
     ref: 'Image'
+  },
+  loopCount: {
+    type: Number,
+    max: 100,
+    min: 1,
+    default: 1
+  },
+  loopDelay: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 30 * 60 * 1000 // 30 mins
   },
   isActive: {
     type: Boolean,
@@ -50,7 +75,7 @@ var CampaignSchema = new Schema({
   expiresAt: {
     type: Date
   },
-  action: {
+  deliveryAction: {
     dpLimit: {
       type: Number,
       default: 1
@@ -61,6 +86,9 @@ var CampaignSchema = new Schema({
     },
     actionType: {
       type: String
+    },
+    isUsed: {
+      type: Boolean
     }
   },
   tags: [{

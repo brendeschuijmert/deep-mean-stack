@@ -15,28 +15,28 @@ exports.invokeRolesPolicies = function () {
   acl.allow([{
     roles: ['admin'],
     allows: [{
-      resources: '/api/applications',
+      resources: '/api/applications/:applicationId/campaigns',
       permissions: '*'
     }, {
-      resources: '/api/applications/:applicationId',
+      resources: '/api/applications/:applicationId/campaigns/:campaignId',
       permissions: '*'
     }]
   }, {
     roles: ['user'],
     allows: [{
-      resources: '/api/applications',
+      resources: '/api/applications/:applicationId/campaigns',
       permissions: '*'
     }, {
-      resources: '/api/applications/:applicationId',
+      resources: '/api/applications/:applicationId/campaigns/:campaignId',
       permissions: '*'
     }]
   }, {
     roles: ['guest'],
     allows: [{
-      resources: '/api/applications',
+      resources: '/api/applications/:applicationId/campaigns',
       permissions: []
     }, {
-      resources: '/api/applications/:applicationId',
+      resources: '/api/applications/:applicationId/campaigns/:campaignId',
       permissions: []
     }]
   }]);
@@ -48,8 +48,8 @@ exports.invokeRolesPolicies = function () {
 exports.isAllowed = function (req, res, next) {
   var roles = (req.user) ? req.user.roles : ['guest'];
 
-  // If an application is being processed and the current user created it then allow any manipulation
-  if (req.application && req.user && req.application.user && req.application.user._id === req.user._id) {
+  // If a campaign is being processed and the current user created it then allow any manipulation
+  if (req.campaign && req.user && req.campaign.user && req.campaign.user._id === req.user._id) {
     return next();
   }
 

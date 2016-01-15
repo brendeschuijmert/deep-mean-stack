@@ -53,7 +53,7 @@ paths:
             items:
               $ref: '#/definitions/Application'
         default:
-          description: Unexepected error
+          description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
     post:
@@ -91,6 +91,29 @@ paths:
           description: Application
           schema:
             $ref: '#/definitions/Application'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /applications/{applicationId}/campaigns:
+    get:
+      summary: list campaigns
+      description: |
+        Returns list of campaigns inside application
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: An array of campaigns
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Campaign'
         default:
           description: Unexpected error
           schema:
@@ -273,6 +296,67 @@ definitions:
       eventValue:
         type: string
         example: test
+  Campaign:
+    type: object
+    properties:
+      campaignType:
+        type: string
+        example: url
+      title:
+        type: string
+        example: test-campaign
+      url:
+        type: string
+        example: https://www.google.com
+      tags:
+        type: array
+        items:
+          type: string
+      platform:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Android
+            displayType:
+              type: array
+              items:
+                type: string
+                example: nova
+      loopCount:
+        type: integer
+        minimum: 1
+        maximum: 100
+      loopDelay:
+        type: integer
+        minimum: 0
+        maximum: 180000
+      message:
+        type: string
+        example: sample notification message
+      messagePosition:
+        type: string
+        example: top
+      expiresAt:
+        type: string
+        format: date-time
+      deliveryAction:
+        type: object
+        properties:
+          dpLimit:
+            type: integer
+          dayLimit:
+            type: integer
+          actionType:
+            type: string
+          isUsed:
+            type: boolean
+      isActive:
+        type: boolean
+      isPaused:
+        type: boolean
   Error:
     type: object
     properties:
