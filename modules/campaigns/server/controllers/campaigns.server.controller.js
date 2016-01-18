@@ -110,7 +110,7 @@ exports.campaignByID = function (req, res, next, id) {
     });
   }
 
-  Campaign.findById(id).exec(function (err, campaign) {
+  Campaign.findById(id).populate('deliverySchedule').exec(function (err, campaign) {
     if (err) {
       return next(err);
     } else if (!campaign) {
