@@ -271,7 +271,7 @@ module.exports.init = function (db) {
   this.initSwaggerMiddleware(app);
 
   // Configure Socket.io
-  app = this.configureSocketIO(app, db);
+  // app = this.configureSocketIO(app, db);
 
   return app;
 };
