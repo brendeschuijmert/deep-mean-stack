@@ -91,6 +91,10 @@ var CampaignSchema = new Schema({
       type: Boolean
     }
   },
+  deliverySchedule: {
+    type: Schema.ObjectId,
+    ref: 'CampaignSchedule'
+  },
   tags: [{
     type: String,
     trim: true,

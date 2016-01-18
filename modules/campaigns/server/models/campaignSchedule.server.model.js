@@ -37,6 +37,9 @@ var CampaignScheduleSchema = new Schema({
   lastSent: {
     type: Date
   },
+  nextSend: {
+    type: Date
+  },
   frequency: {
     type: String,
     enum: ['immediate', 'scheduled']

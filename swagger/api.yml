@@ -118,6 +118,177 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+    post:
+      summary: create campaign
+      description: |
+        Creates a campaign with basic properties
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for campaign
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                description: title of campaign
+                example: testing campaign
+              tags:
+                type: array
+                items:
+                  type: string
+              platform:
+                $ref: '#/definitions/Platform'
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: An object of campaign
+          schema:
+            $ref: '#/definitions/Campaign'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /applications/{applicationId}/campaigns/{campaignId}:
+    get:
+      summary: get a campaign detail
+      description: |
+        Get a campaign detail
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: campaignId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: An object of campaign
+          schema:
+            $ref: '#/definitions/Campaign'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: delete a campaign
+      description: |
+        delete a campaign
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: campaignId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: An object of campaign
+          schema:
+            $ref: '#/definitions/Campaign'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: update campaign
+      description: |
+        Update a campaign
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: campaignId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for campaign
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Campaign'
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: An object of campaign
+          schema:
+            $ref: '#/definitions/Campaign'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /applications/{applicationId}/campaigns/{campaignId}/schedule:
+    put:
+      summary: save campaign schedule
+      description: |
+        Save campaign delivery schedule
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: campaignId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for campaign schedule
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CampaignSchedule'
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: An object of campaign schedule
+          schema:
+            $ref: '#/definitions/CampaignSchedule'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: remove campaign schedule
+      description: |
+        remove campaign schedule
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: campaignId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: An object of campaign schedule
+          schema:
+            $ref: '#/definitions/CampaignSchedule'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
   /mobile/authenticate:
     post:
       summary: mobile sign in
@@ -313,18 +484,7 @@ definitions:
         items:
           type: string
       platform:
-        type: array
-        items:
-          type: object
-          properties:
-            name:
-              type: string
-              example: Android
-            displayType:
-              type: array
-              items:
-                type: string
-                example: nova
+        $ref: '#/definitions/Platform'
       loopCount:
         type: integer
         minimum: 1
@@ -353,10 +513,48 @@ definitions:
             type: string
           isUsed:
             type: boolean
+      deliverySchedule:
+        $ref: '#/definitions/CampaignSchedule'
       isActive:
         type: boolean
       isPaused:
         type: boolean
+  Platform:
+    type: array
+    items:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Android
+        displayType:
+          type: array
+          items:
+            type: string
+            example: nova
+  CampaignSchedule:
+    type: object
+    properties:
+      repeat:
+        type: string
+        example: once
+      sendDate:
+        type: string
+        format: date-time
+      timeZone:
+        type: string
+      status:
+        type: string
+        example: ready
+      lastSent:
+        type: string
+        format: date-time
+      nextSend:
+        type: string
+        format: date-time
+      frequency:
+        type: string
+        example: immediate
   Error:
     type: object
     properties:
