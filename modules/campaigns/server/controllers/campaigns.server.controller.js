@@ -7,8 +7,12 @@ var path = require('path'),
   mongoose = require('mongoose'),
   randomstring = require('randomstring'),
   _ = require('lodash'),
+  multer = require('multer'),
   Application = mongoose.model('Application'),
   Campaign = mongoose.model('Campaign'),
+  Uploader = require('s3-uploader'),
+  config = require(path.resolve('./config/config')),
+  ImageLib = require(path.resolve('./modules/core/server/libs/images.server.lib')),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
@@ -35,6 +39,52 @@ exports.create = function (req, res) {
  */
 exports.read = function (req, res) {
   res.json(req.campaign);
+};
+
+/**
+ * Uploads animation
+ */
+exports.uploadImage = function (req, res) {
+  var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, config.uploads.dest);
+    },
+    filename: function(req, file, cb) {
+      cb(null, randomstring.generate(10) + '_' + file.originalname);
+    }
+  });
+  var upload = multer(_.extend(config.uploads, {
+    storage: storage
+  })).single('image');
+  var campaign = req.campaign;
+  upload(req, res, function(uploadError) {
+    if(uploadError) {
+      return res.status(400).send({
+        message: 'Error occurred while uploading profile picture'
+      });
+    } else {
+      ImageLib.uploadToAWS(req.file, function(err, image) {
+        if (err) {
+          return res.status(400).send({
+            message: err
+          });
+        }
+
+        if (image) {
+          campaign.animation = image;
+          campaign.save(function (err) {
+            if (err) {
+              return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+              });
+            } else {
+              res.json(campaign);
+            }
+          });
+        }
+      });
+    }
+  });
 };
 
 /**

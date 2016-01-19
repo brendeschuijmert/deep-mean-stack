@@ -32,11 +32,14 @@ module.exports = {
   logo: 'modules/core/client/img/brand/logo.png',
   favicon: 'modules/core/client/img/brand/favicon.ico',
   uploads: {
-    profileUpload: {
-      dest: './modules/users/client/img/profile/uploads/', // Profile upload destination path
-      limits: {
-        fileSize: 1*1024*1024 // Max file size in bytes (1 MB)
-      }
+    dest: './tmp/', // tmp uploads path
+    limits: {
+      fileSize: 1*1024*1024 // Max file size in bytes (1 MB)
     }
+  },
+  aws: {
+    bucket: 'dp-mean',
+    accessKeyId: 'AKIAJ7MS2AC3YICO235Q',
+    secretAccessKey: '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'
   }
 };

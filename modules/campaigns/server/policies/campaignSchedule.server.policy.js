@@ -13,27 +13,9 @@ acl = new acl(new acl.memoryBackend());
  */
 exports.invokeRolesPolicies = function () {
   acl.allow([{
-    roles: ['admin'],
+    roles: ['admin', 'user'],
     allows: [{
-      resources: '/api/applications/:applicationId/campaigns',
-      permissions: '*'
-    }, {
-      resources: '/api/applications/:applicationId/campaigns/:campaignId',
-      permissions: '*'
-    }, {
-      resources: '/api/applications/:applicationId/campaigns/:campaignId/image',
-      permissions: '*'
-    }]
-  }, {
-    roles: ['user'],
-    allows: [{
-      resources: '/api/applications/:applicationId/campaigns',
-      permissions: '*'
-    }, {
-      resources: '/api/applications/:applicationId/campaigns/:campaignId',
-      permissions: '*'
-    }, {
-      resources: '/api/applications/:applicationId/campaigns/:campaignId/image',
+      resources: '/api/applications/:applicationId/campaigns/:campaignId/schedule',
       permissions: '*'
     }]
   }]);

@@ -18,6 +18,9 @@ module.exports = function (app) {
     .put(campaigns.update)
     .delete(campaigns.delete);
 
+  app.route('/api/applications/:applicationId/campaigns/:campaignId/image').all(campaignsPolicy.isAllowed)
+    .post(campaigns.uploadImage);
+
   // Finish by binding the campaign middleware
   app.param('campaignId', campaigns.campaignByID);
 };

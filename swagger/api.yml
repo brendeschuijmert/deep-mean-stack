@@ -234,6 +234,37 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}/campaigns/{campaignId}/image:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      summary: uploads image
+      description: |
+        uploads animation for a campaign
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: campaignId
+          required: true
+          in: path
+          type: string
+        - name: image
+          required: true
+          in: formData
+          type: file
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: An object of Image
+          schema:
+            $ref: '#/definitions/Campaign'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
   /applications/{applicationId}/campaigns/{campaignId}/schedule:
     put:
       summary: save campaign schedule
@@ -289,6 +320,7 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+
   /mobile/authenticate:
     post:
       summary: mobile sign in
@@ -537,7 +569,12 @@ definitions:
     properties:
       repeat:
         type: string
-        example: once
+        default: once
+        enum:
+        - once
+        - daily
+        - weekly
+        - monthly
       sendDate:
         type: string
         format: date-time
@@ -545,7 +582,10 @@ definitions:
         type: string
       status:
         type: string
-        example: ready
+        default: ready
+        enum:
+        - ready
+        - inprogress
       lastSent:
         type: string
         format: date-time
@@ -554,7 +594,10 @@ definitions:
         format: date-time
       frequency:
         type: string
-        example: immediate
+        default: immediate
+        enum:
+        - immediate
+        - scheduled
   Error:
     type: object
     properties:
