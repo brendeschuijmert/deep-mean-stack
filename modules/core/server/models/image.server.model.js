@@ -30,6 +30,10 @@ var ImageSchema = new Schema({
   size: {
     type: Number,
     default: 0
+  },
+  duration: { // image animation duration
+    type: Number,
+    default: 0
   }
 });
 
