@@ -12,12 +12,12 @@ var path = require('path'),
 //
 // mongoose.Promise = require('bluebird');
 
-exports.uploadToAWS = function(imgObj, cb) {
+exports.uploadToAWS = function(imgObj, cb, staticImg) {
   var buffer = fs.readFileSync(imgObj.path);
   var gifInfo = gifyParse.getInfo(buffer);
 
   // For now let's accept only gif files and no resizing
-  if (gifInfo.valid && gifInfo.duration) {
+  if ((gifInfo.valid && gifInfo.duration && !staticImg) || staticImg) {
     // upload to amazon
     var client = new Uploader(config.aws.bucket, {
       aws: {
@@ -44,7 +44,7 @@ exports.uploadToAWS = function(imgObj, cb) {
           url: versions[0].url,
           type: imgObj.mimetype,
           size: imgObj.size,
-          duration: gifInfo.duration
+          duration: gifInfo.duration || 0
         };
         var image = new ImageModel(imageJson);
         image.save(function (err) {

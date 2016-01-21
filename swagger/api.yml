@@ -337,6 +337,9 @@ paths:
               apiSecret:
                 type: string
                 example: 7OwvXZ9H1vZtdrkrIWl7
+              uuid:
+                type: string
+                example: test-uuid
       description: |
         Authenticate mobile app with api key and secret.
         Returns sender id and token to use other mobile APIs.
@@ -349,14 +352,18 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /mobile/subscribe:
+  /mobile/user/{appUserId}:
     post:
-      summary: register app user
+      summary: update app user info
       description: |
-        Registers app user with device info and gcm token
+        Update app user information. Only specified fields in request body will be updated.
       tags:
         - Mobile API
       parameters:
+        - name: appUserId
+          required: true
+          in: path
+          type: string
         - name: body
           in: body
           required: true
@@ -369,35 +376,23 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /mobile/track_event:
+  /mobile/user/{appUserId}/track_event:
     post:
       summary: track events from mobile app
       description: |
         Track events from mobile app.
-        userId field is required field and tracking event won't work if userId is not set.
-        userDevice field is optional and you can set only changed field. For example, when only location of user is changed,
-        userDevice: {
-          location: {
-            lat: '10.100000',
-            lng: '10.010000'
-          }
-        }
       tags:
         - Mobile API
       parameters:
+        - name: appUserId
+          required: true
+          in: path
+          type: string
         - name: body
           in: body
           required: true
           schema:
-            type: object
-            properties:
-              userId:
-                type: string
-                example: 5695b0b389f3409e2986eee9
-              event:
-                $ref: '#/definitions/AnalyticEvent'
-              userDevice:
-                $ref: '#/definitions/UserDevice'
+            $ref: '#/definitions/AnalyticEvent'
       responses:
         '200':
           description: Success
@@ -580,6 +575,7 @@ definitions:
         format: date-time
       timeZone:
         type: string
+        default: America/New_York
       status:
         type: string
         default: ready
@@ -589,9 +585,8 @@ definitions:
       lastSent:
         type: string
         format: date-time
-      nextSend:
+      jobId:
         type: string
-        format: date-time
       frequency:
         type: string
         default: immediate

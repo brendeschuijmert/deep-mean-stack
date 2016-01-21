@@ -19,31 +19,12 @@ mongoose.Promise = Promise;
  * Track User Event
  */
 exports.track = function (req, res) {
-  var eventData = _.pick(req.body.event, 'eventType', 'eventTarget', 'eventValue');
+  var eventData = _.pick(req.body, 'eventType', 'eventTarget', 'eventValue');
   var analyticEvent = new AnalyticEvent(eventData);
   var application = req.decoded;
-  var userDevice;
+  var userDevice = req.appUser.userDevice || {};
 
-  AppUser.findById(req.body.userId)
-  .populate('userDevice')
-  .then(function(appUser) {
-    if (!appUser) {
-      throw {
-        message: 'App user not found'
-      };
-    }
-
-    if (req.body.userDevice) { // update user info
-      var userDeviceData = _.extend(appUser.userDevice.toObject(), req.body.userDevice);
-      userDeviceData = _.omit(userDeviceData, '_id', '__v', 'created');
-      userDevice = new UserDevice(userDeviceData);
-      userDevice.appUser = appUser._id;
-      return userDevice.save();
-    } else { // user info is not updated
-      userDevice = appUser.userDevice;
-      return Promise.resolve(userDevice);
-    }
-  })
+  Promise.resolve()
   .then(function(){
     analyticEvent.userDevice = userDevice._id;
     return analyticEvent.save();
