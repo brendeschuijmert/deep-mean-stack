@@ -81,5 +81,3 @@ pem/
 
 # api.json
 public/api.json
-
-tmp/*
