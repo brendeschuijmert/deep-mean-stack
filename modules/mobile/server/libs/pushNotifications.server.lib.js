@@ -49,7 +49,7 @@ exports.send = function(application, campaign) {
     console.log('Tokens', registerTokens);
 
     var sender = new gcm.Sender(application.googleApiKey);
-    sender.sendNoRetry(message, {registrationTokens: registerTokens}, function(err, response){
+    sender.sendNoRetry(message, { registrationTokens: registerTokens }, function(err, response){
       if (err) {
         return Promise.reject(err);
       } else {
