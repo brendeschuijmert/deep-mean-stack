@@ -10,15 +10,23 @@ var path = require('path'),
   md5 = require('md5'),
   jwt = require('jsonwebtoken'),
   _ = require('lodash'),
+  AppUser = mongoose.model('AppUser'),
   Application = mongoose.model('Application'),
-  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
+  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
+  Promise = require('bluebird');
 
-mongoose.Promise = require('bluebird');
+mongoose.Promise = Promise;
 
 /**
  * Register App User
  */
 exports.authenticate = function (req, res) {
+  var uuid = req.body.uuid;
+  var newAppUser = new AppUser({
+    uuid: uuid
+  });
+  var currentApplication;
+
   Application.findOne({
     apiKey: req.body.apiKey,
     apiSecret: req.body.apiSecret
@@ -31,13 +39,29 @@ exports.authenticate = function (req, res) {
         message: 'Application not found'
       };
     }
-    var appJson = _.pick(application, 'senderId', 'packageName');
-    var token = jwt.sign(application, config.apiSessionSecret, {
+    currentApplication = application;
+    return AppUser.findOne({
+      uuid: uuid,
+      application: application._id
+    });
+  })
+  .then(function(appUser){
+    if (appUser === null) {
+      newAppUser.application = currentApplication._id;
+      return newAppUser.save();
+    } else {
+      return Promise.resolve(appUser);
+    }
+  })
+  .then(function(currentAppUser){
+    var appJson = _.pick(currentApplication, 'senderId', 'packageName');
+    var token = jwt.sign(currentApplication, config.apiSessionSecret, {
       expiresIn: config.apiTokenExpire * 60
     });
     res.json({
       success: true,
       application: appJson,
+      userId: currentAppUser._id,
       token: token
     });
   }).catch(function(err){
