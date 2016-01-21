@@ -353,10 +353,34 @@ paths:
           schema:
             $ref: '#/definitions/Error'
   /mobile/user/{appUserId}:
-    post:
+    put:
       summary: update app user info
       description: |
-        Update app user information. Only specified fields in request body will be updated.
+        Update app user information. For now only preferences.
+      tags:
+        - Mobile API
+      parameters:
+        - name: appUserId
+          required: true
+          in: path
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AppUser'
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /mobile/user/{appUserId}/user_device:
+    post:
+      summary: update user device info
+      description: |
+        Update user device information. Only specified fields in request body will be updated.
       tags:
         - Mobile API
       parameters:
@@ -431,6 +455,16 @@ definitions:
       _id:
         type: string
         description: User ID
+  AppUser:
+    type: object
+    properties:
+      uuid:
+        type: string
+      preferences:
+        type: array
+        items:
+          type: string
+          example: Comedy
   UserDevice:
     type: object
     properties:
