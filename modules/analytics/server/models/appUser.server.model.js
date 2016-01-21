@@ -25,6 +25,9 @@ var AppUserSchema = new Schema({
     type: String,
     required: 'UUID can not be blank'
   },
+  preferences: [{
+    type: String
+  }],
   userDevice: {
     type: Schema.ObjectId,
     ref: 'UserDevice'

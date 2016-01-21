@@ -15,9 +15,26 @@ var path = require('path'),
 mongoose.Promise = require('bluebird');
 
 /**
+ * Update App User fields
+ */
+exports.update = function(req, res) {
+  var appUserJson = _.pick(req.body, 'preferences', 'uuid');
+  var currentAppUser = _.extend(req.appUser, appUserJson);
+  currentAppUser.save()
+  .then(function(){
+    res.json(currentAppUser);
+  })
+  .catch(function(err){
+    res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
+  });
+};
+
+/**
  * Update User Device
  */
-exports.update = function (req, res) {
+exports.updateUserDevice = function (req, res) {
   var userDevice;
   var application = req.decoded;
   var currentAppUser = req.appUser;

@@ -13,7 +13,10 @@ module.exports = function (app) {
     .post(auth.authenticate);
 
   app.route('/api/mobile/user/:appUserId')
-    .post(auth.applicationByToken, appUserCtlr.update);
+    .put(auth.applicationByToken, appUserCtlr.update);
+
+  app.route('/api/mobile/user/:appUserId/user_device')
+    .post(auth.applicationByToken, appUserCtlr.updateUserDevice);
 
   app.route('/api/mobile/user/:appUserId/track_event')
     .post(auth.applicationByToken, events.track);
