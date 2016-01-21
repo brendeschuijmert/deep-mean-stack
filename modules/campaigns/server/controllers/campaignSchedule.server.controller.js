@@ -36,9 +36,9 @@ exports.save = function (req, res) {
   // scheduling job with crontab
   var jobId;
   if (campaignSchedule.frequency === 'immediate') {
-    jobId = crontab.scheduleJob('* * * * *', pushNotificationsLib.send, [req.campaign], null, false);
+    jobId = crontab.scheduleJob('* * * * *', pushNotificationsLib.send, [req.application, req.campaign], null, false);
   } else { // scheduled jobs
-    jobId = crontab.scheduleJob(scheduler.getCrontabString(jsonObj), pushNotificationsLib.send, [req.campaign]);
+    jobId = crontab.scheduleJob(scheduler.getCrontabString(jsonObj), pushNotificationsLib.send, [req.application, req.campaign]);
   }
   campaignSchedule.jobId = jobId;
 
