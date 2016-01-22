@@ -66,6 +66,7 @@ exports.uploadImage = function (req, res) {
     } else {
       fs.chmodSync(req.file.path, '0777');
       ImageLib.uploadToAWS(req.file, function(err, image) {
+        fs.unlinkSync(req.file.path);
         if (err) {
           return res.status(400).send({
             message: err
