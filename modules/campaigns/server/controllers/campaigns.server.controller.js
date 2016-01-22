@@ -60,9 +60,10 @@ exports.uploadImage = function (req, res) {
   upload(req, res, function(uploadError) {
     if(uploadError) {
       return res.status(400).send({
-        message: 'Error occurred while uploading profile picture'
+        message: 'Error occurred while uploading picture'
       });
     } else {
+      fs.chmodSync(req.file.path, '0777');
       ImageLib.uploadToAWS(req.file, function(err, image) {
         if (err) {
           return res.status(400).send({
