@@ -28,7 +28,7 @@ exports.uploadToAWS = function(imgObj, cb, staticImg) {
       },
       cleanup: {
         versions: false,
-        original: true
+        original: false
       },
       original: {
         awsImageAcl: 'public-read'
