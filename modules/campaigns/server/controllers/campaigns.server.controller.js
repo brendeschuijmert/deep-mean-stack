@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var path = require('path'),
+  fs = require('fs'),
   mongoose = require('mongoose'),
   randomstring = require('randomstring'),
   _ = require('lodash'),
