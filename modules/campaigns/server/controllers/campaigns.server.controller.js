@@ -11,7 +11,6 @@ var path = require('path'),
   multer = require('multer'),
   Application = mongoose.model('Application'),
   Campaign = mongoose.model('Campaign'),
-  Uploader = require('s3-uploader'),
   config = require(path.resolve('./config/config')),
   ImageLib = require(path.resolve('./modules/core/server/libs/images.server.lib')),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
