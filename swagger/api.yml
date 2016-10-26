@@ -95,6 +95,144 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}/segments:
+    get:
+      summary: list segments
+      description: |
+        Returns list of segments inside application
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Segments
+      responses:
+        '200':
+          description: An array of segmetns
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Segment'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: create segment
+      description: |
+        Creates a segment with basic properties
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for segment
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: name of the segment
+                example: Age Group
+              filters:
+                type: array
+                description: array of filter ids
+                items:
+                  type: string
+      tags:
+        - Segments
+      responses:
+        '200':
+          description: An object of segment
+          schema:
+            $ref: '#/definitions/Segment'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /applications/{applicationId}/segments/{segmentId}:
+    get:
+      summary: get a segment detail
+      description: |
+        Get a segment detail
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: segmentId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Segments
+      responses:
+        '200':
+          description: An object of segment
+          schema:
+            $ref: '#/definitions/Segment'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: delete a segment
+      description: |
+        delete a segment
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: segmentId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Segments
+      responses:
+        '200':
+          description: An object of segment
+          schema:
+            $ref: '#/definitions/Segment'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: update segment
+      description: |
+        Update a segment
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: segmentId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for segment
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Segment'
+      tags:
+        - Segments
+      responses:
+        '200':
+          description: An object of segment
+          schema:
+            $ref: '#/definitions/Segment'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
   /applications/{applicationId}/campaigns:
     get:
       summary: list campaigns
@@ -528,6 +666,51 @@ definitions:
       eventValue:
         type: string
         example: test
+  Segment:
+    type: object
+    properties:
+      _id:
+        type: string
+      name:
+        type: string
+        example: Age Group
+      filters:
+        type: array
+        items:
+          $ref: '#/definitions/Filter'
+      application:
+        $ref: '#/definitions/Application'
+  Filter:
+    type: object
+    properties:
+      operator:
+        type: string
+        default: =
+        enum:
+        - '>'
+        - '<'
+        - '>='
+        - '<='
+        - '='
+      varName:
+        type: string
+        example: devicePlatform
+      value:
+        type: string
+        example: Android
+      logicOperator:
+        type: string
+        default: AND
+        enum:
+        - AND
+        - OR
+      parentFilter:
+        type: object
+      childrenFilters:
+        type: array
+        description: array of filters
+        items:
+          type: object
   Campaign:
     type: object
     properties:
