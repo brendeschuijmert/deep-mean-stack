@@ -12,9 +12,9 @@ var seedOptions = {};
 function removeUser (user) {
   return new Promise(function (resolve, reject) {
     var User = mongoose.model('User');
-    User.find({ username: user.username }).remove(function (err) {
+    User.find({ email: user.email }).remove(function (err) {
       if (err) {
-        reject(new Error('Failed to remove local ' + user.username));
+        reject(new Error('Failed to remove local ' + user.email));
       }
       resolve();
     });
@@ -27,7 +27,7 @@ function saveUser (user) {
       // Then save the user
       user.save(function (err, theuser) {
         if (err) {
-          reject(new Error('Failed to add local ' + user.username));
+          reject(new Error('Failed to add local ' + user.email));
         } else {
           resolve(theuser);
         }
@@ -39,15 +39,15 @@ function saveUser (user) {
 function checkUserNotExists (user) {
   return new Promise(function (resolve, reject) {
     var User = mongoose.model('User');
-    User.find({ username: user.username }, function (err, users) {
+    User.find({ email: user.email }, function (err, users) {
       if (err) {
-        reject(new Error('Failed to find local account ' + user.username));
+        reject(new Error('Failed to find local account ' + user.email));
       }
 
       if (users.length === 0) {
         resolve();
       } else {
-        reject(new Error('Failed due to local account already exists: ' + user.username));
+        reject(new Error('Failed due to local account already exists: ' + user.email));
       }
     });
   });
@@ -57,7 +57,7 @@ function reportSuccess (password) {
   return function (user) {
     return new Promise(function (resolve, reject) {
       if (seedOptions.logResults) {
-        console.log(chalk.bold.red('Database Seeding:\t\t\tLocal ' + user.username + ' added with password set to ' + password));
+        console.log(chalk.bold.red('Database Seeding:\t\t\tLocal ' + user.email + ' added with password set to ' + password));
       }
       resolve();
     });
@@ -73,7 +73,7 @@ function seedTheUser (user) {
       // set the new password
       user.password = password;
 
-      if (user.username === seedOptions.seedAdmin.username && process.env.NODE_ENV === 'production') {
+      if (user.email === seedOptions.seedAdmin.email && process.env.NODE_ENV === 'production') {
         checkUserNotExists(user)
           .then(saveUser(user))
           .then(reportSuccess(password))
@@ -133,7 +133,8 @@ module.exports.start = function start(options) {
 
     var adminAccount = new User(seedOptions.seedAdmin);
     var userAccount = new User(seedOptions.seedUser);
-
+    console.log(adminAccount);
+    console.log(userAccount);
     //If production only seed admin if it does not exist
     if (process.env.NODE_ENV === 'production') {
       User.generateRandomPassphrase()
