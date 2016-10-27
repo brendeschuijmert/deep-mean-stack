@@ -138,11 +138,8 @@ paths:
                 type: string
                 description: name of the segment
                 example: Age Group
-              filters:
-                type: array
-                description: array of filter ids
-                items:
-                  type: string
+              filter:
+                $ref: '#/definitions/Filter'
       tags:
         - Segments
       responses:
@@ -674,43 +671,17 @@ definitions:
       name:
         type: string
         example: Age Group
-      filters:
-        type: array
-        items:
-          $ref: '#/definitions/Filter'
+      filter:
+        $ref: '#/definitions/Filter'
       application:
         $ref: '#/definitions/Application'
   Filter:
     type: object
     properties:
-      operator:
+      _id:
         type: string
-        default: =
-        enum:
-        - '>'
-        - '<'
-        - '>='
-        - '<='
-        - '='
-      varName:
-        type: string
-        example: devicePlatform
-      value:
-        type: string
-        example: Android
-      logicOperator:
-        type: string
-        default: AND
-        enum:
-        - AND
-        - OR
-      parentFilter:
+      body:
         type: object
-      childrenFilters:
-        type: array
-        description: array of filters
-        items:
-          type: object
   Campaign:
     type: object
     properties:

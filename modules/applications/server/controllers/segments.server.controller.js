@@ -14,7 +14,7 @@ var path = require('path'),
  * Create a segment
  */
 exports.create = function (req, res) {
-  var segmentJSON = _.pick(req.body, 'name', 'filters');
+  var segmentJSON = _.pick(req.body, 'name', 'filter');
   var segment = new Segment(segmentJSON);
   segment.application = segment.application;
 
@@ -44,7 +44,7 @@ exports.update = function (req, res) {
 
   segment = _.extend(
     segment,
-    _.pick(req.body, 'name', 'filters')
+    _.pick(req.body, 'name', 'filter')
   );
 
   segment.save(function (err) {
