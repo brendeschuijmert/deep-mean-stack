@@ -230,6 +230,138 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}/filters:
+    get:
+      summary: list filters
+      description: |
+        Returns list of filters inside application
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Filters
+      responses:
+        '200':
+          description: An array of filters
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Filter'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: create filter
+      description: |
+        Creates a filter with basic properties
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for filter
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              body:
+                type: object
+                description: object for filter similar to mongoose query format
+      tags:
+        - Filters
+      responses:
+        '200':
+          description: An object of filter
+          schema:
+            $ref: '#/definitions/Filter'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /applications/{applicationId}/filters/{filterId}:
+    get:
+      summary: get a filter detail
+      description: |
+        Get a filter detail
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: filterId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Filters
+      responses:
+        '200':
+          description: An object of filter
+          schema:
+            $ref: '#/definitions/Filter'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: delete a filter
+      description: |
+        delete a filter
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: filterId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Filters
+      responses:
+        '200':
+          description: An object of filter
+          schema:
+            $ref: '#/definitions/Filter'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: update filter
+      description: |
+        Update a filter
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: filterId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for filter
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Filter'
+      tags:
+        - Filters
+      responses:
+        '200':
+          description: An object of filter
+          schema:
+            $ref: '#/definitions/Filter'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
   /applications/{applicationId}/campaigns:
     get:
       summary: list campaigns
