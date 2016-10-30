@@ -26,10 +26,12 @@ var FilterSchema = new Schema({
 /**
  * validates inner object of filter body for normal comparison operation
  * @function validateComparisonOperation
- * @param {Object} body
+ * @param {string | Object} body
  * @returns {string | bool} error - if there is error, return error message, otherwise false
  */
 var validateComparisonOperation = function(obj) {
+  if (typeof obj === 'string' || typeof obj === 'number') return false;
+
   var allowedOpsForObj = ['$gt', '$gte', '$lt', '$lte', '$eq'];
   var keys = Object.keys(obj);
   for (var i = 0; i < keys.length; i += 1) {
