@@ -26,10 +26,10 @@ var SegmentSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Application'
   },
-  filters: [{
+  filters: {
     type: Schema.ObjectId,
     ref: 'Filter'
-  }]
+  }
 });
 
 mongoose.model('Segment', SegmentSchema);
