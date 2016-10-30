@@ -19,7 +19,7 @@ var path = require('path'),
  * Create a campaign
  */
 exports.create = function (req, res) {
-  var campaignJson = _.pick(req.body, 'title', 'tags', 'platform');
+  var campaignJson = _.pick(req.body, 'title', 'tags', 'platform', 'segment');
   var campaign = new Campaign(campaignJson);
   campaign.application = req.application;
 
@@ -96,10 +96,9 @@ exports.update = function (req, res) {
   var campaign = req.campaign;
 
   //TODO: Support for image
-  //TODO: support for segment
   campaign = _.extend(
     campaign,
-    _.pick(req.body, 'isPaused', 'isActive', 'message', 'messagePosition', 'expiresAt', 'deliveryAction', 'tags', 'title', 'platform', 'loopCount', 'loopDelay', 'url', 'campaignType')
+    _.pick(req.body, 'isPaused', 'isActive', 'message', 'messagePosition', 'expiresAt', 'deliveryAction', 'tags', 'title', 'platform', 'loopCount', 'loopDelay', 'url', 'campaignType', 'segment')
   );
 
   campaign.save(function (err) {

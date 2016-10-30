@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose'),
   AppUser = mongoose.model('AppUser'),
+  Segment = mongoose.model('Segment'),
   _ = require('lodash'),
   Promise = require('bluebird');
 
@@ -16,6 +17,21 @@ exports.getAppUsersBySegment = function(application, segment) {
         } else {
           resolve(appUsers);
         }
+      });
+    } else {
+      Segment.findById(segment).populate('filter').then(function(result) {
+        return AppUser.find({ application: application }).populate({
+          path: 'userDevice',
+          match: result.filter.body
+        }).exec(function(err, appUsers) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(appUsers);
+          }
+        });
+      }).catch(function(err) {
+        reject(err);
       });
     }
   });
