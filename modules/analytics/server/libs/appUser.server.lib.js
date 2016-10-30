@@ -20,9 +20,10 @@ exports.getAppUsersBySegment = function(application, segment) {
       });
     } else {
       Segment.findById(segment).populate('filter').then(function(result) {
+        var filter = JSON.parse(result.filter.body);
         return AppUser.find({ application: application }).populate({
           path: 'userDevice',
-          match: result.filter.body
+          match: filter
         }).exec(function(err, appUsers) {
           if (err) {
             reject(err);
