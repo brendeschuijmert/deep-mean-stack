@@ -19,7 +19,7 @@ var FilterSchema = new Schema({
     type: Date
   },
   body: {
-    type: Object
+    type: String
   }
 });
 
@@ -50,6 +50,7 @@ var validateComparisonOperation = function(obj) {
  * @returns {string | bool} error - if there is error, return error message, otherwise false
  */
 var validateFilter = function(body) {
+  console.log(body);
   var keys = Object.keys(body);
   var allowedOpsForArray = ['$and', '$or'];
 
@@ -70,12 +71,12 @@ var validateFilter = function(body) {
           return error;
         }
       }
-    }
-
-    // for usual variables, validates for comparison operation
-    var errMsg = validateComparisonOperation(val);
-    if (errMsg) {
-      return errMsg;
+    } else {
+      // for usual variables, validates for comparison operation
+      var errMsg = validateComparisonOperation(val);
+      if (errMsg) {
+        return errMsg;
+      }
     }
   }
 
@@ -86,7 +87,7 @@ var validateFilter = function(body) {
  * Hook a pre validate method to validate filter body
  */
 FilterSchema.pre('validate', function (next) {
-  var error = validateFilter(this.body);
+  var error = validateFilter(JSON.parse(this.body));
 
   if (error) {
     this.invalidate('body', error);

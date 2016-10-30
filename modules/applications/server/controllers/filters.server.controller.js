@@ -14,6 +14,7 @@ var path = require('path'),
  */
 exports.create = function (req, res) {
   var filterJSON = _.pick(req.body, 'body');
+  filterJSON.body = JSON.stringify(filterJSON.body);
   var filter = new Filter(filterJSON);
 
   filter.save(function (err) {
@@ -44,6 +45,10 @@ exports.update = function (req, res) {
     filter,
     _.pick(req.body, 'body')
   );
+
+  if (_.isObject(filter.body)) {
+    filter.body = JSON.stringify(filter.body);
+  }
 
   filter.save(function (err) {
     if (err) {
