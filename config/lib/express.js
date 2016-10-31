@@ -204,17 +204,6 @@ module.exports.initErrorRoutes = function (app) {
 };
 
 /**
- * Configure Socket.io
- */
-module.exports.configureSocketIO = function (app, db) {
-  // Load the Socket.io configuration
-  var server = require('./socket.io')(app, db);
-
-  // Return server object
-  return server;
-};
-
-/**
  * init swagger middleware
  */
 module.exports.initSwaggerMiddleware = function(app) {
@@ -269,9 +258,6 @@ module.exports.init = function (db) {
 
   // Initialize swagger middleware
   this.initSwaggerMiddleware(app);
-
-  // Configure Socket.io
-  // app = this.configureSocketIO(app, db);
 
   return app;
 };
