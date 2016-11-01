@@ -55,8 +55,8 @@ exports.authenticate = function (req, res) {
   })
   .then(function(currentAppUser){
     var appJson = _.pick(currentApplication, 'senderId', 'packageName');
-    var token = jwt.sign(currentApplication, config.apiSessionSecret, {
-      expiresIn: config.apiTokenExpire * 60
+    var token = jwt.sign(currentApplication, config.mobileSessionSecret, {
+      expiresIn: config.mobileTokenExpire * 60
     });
     res.json({
       success: true,
@@ -77,7 +77,7 @@ exports.applicationByToken = function (req, res, next) {
 
   // decode token
   if (token) {
-    jwt.verify(token, config.apiSessionSecret, function(err, decoded){
+    jwt.verify(token, config.mobileSessionSecret, function(err, decoded){
       if (err) {
         return res.json({
           success: false,

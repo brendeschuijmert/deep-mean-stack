@@ -46,6 +46,7 @@ exports.invokeRolesPolicies = function () {
  * Check If Applications Policy Allows
  */
 exports.isAllowed = function (req, res, next) {
+  console.log(req.user);
   var roles = (req.user) ? req.user.roles : ['guest'];
 
   // If an application is being processed and the current user created it then allow any manipulation

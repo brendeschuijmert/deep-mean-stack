@@ -7,6 +7,9 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   mongoose = require('mongoose'),
   passport = require('passport'),
+  jwt = require('jsonwebtoken'),
+  _ = require('lodash'),
+  config = require(path.resolve('./config/config')),
   User = mongoose.model('User');
 
 // URLs for which user can't be redirected on signin
@@ -67,7 +70,11 @@ exports.signin = function (req, res, next) {
         if (err) {
           res.status(400).send(err);
         } else {
-          res.json(user);
+          var token = jwt.sign(user.toJSON(), config.apiSecret, {
+            expiresIn: config.apiTokenExpire * 60
+          });
+          var jsonData = _.extend(user.toJSON(), { token: token });
+          res.json(jsonData);
         }
       });
     }
