@@ -8,8 +8,8 @@ var config = require('../config'),
   morgan = require('morgan'),
   logger = require('./logger'),
   bodyParser = require('body-parser'),
-  session = require('express-session'),
-  MongoStore = require('connect-mongo')(session),
+  passport  = require('passport'),
+  jwt = require('express-jwt'),
   favicon = require('serve-favicon'),
   compress = require('compression'),
   methodOverride = require('method-override'),
@@ -104,25 +104,19 @@ module.exports.initViewEngine = function (app) {
 };
 
 /**
- * Configure Express session
+ * Configure Passport
  */
-module.exports.initSession = function (app, db) {
-  // Express MongoDB session storage
-  app.use(session({
-    saveUninitialized: true,
-    resave: true,
-    secret: config.sessionSecret,
-    cookie: {
-      maxAge: config.sessionCookie.maxAge,
-      httpOnly: config.sessionCookie.httpOnly,
-      secure: config.sessionCookie.secure && config.secure.ssl
-    },
-    key: config.sessionKey,
-    store: new MongoStore({
-      mongooseConnection: db.connection,
-      collection: config.sessionCollection
-    })
+module.exports.initPassport = function (app, db) {
+  app.use(jwt({
+    secret: config.apiSecret,
+    credentialsRequired: false,
+    getToken: function(req) {
+      return req.body.token || req.query.token || req.headers['x-access-token'];
+    }
   }));
+
+  app.use(passport.initialize());
+  app.use(passport.session());
 };
 
 /**
@@ -204,17 +198,6 @@ module.exports.initErrorRoutes = function (app) {
 };
 
 /**
- * Configure Socket.io
- */
-module.exports.configureSocketIO = function (app, db) {
-  // Load the Socket.io configuration
-  var server = require('./socket.io')(app, db);
-
-  // Return server object
-  return server;
-};
-
-/**
  * init swagger middleware
  */
 module.exports.initSwaggerMiddleware = function(app) {
@@ -252,8 +235,8 @@ module.exports.init = function (db) {
   // Initialize modules static client routes, before session!
   this.initModulesClientRoutes(app);
 
-  // Initialize Express session
-  this.initSession(app, db);
+  // Initialize Passport
+  this.initPassport(app, db);
 
   // Initialize Modules configuration
   this.initModulesConfiguration(app);
@@ -269,9 +252,6 @@ module.exports.init = function (db) {
 
   // Initialize swagger middleware
   this.initSwaggerMiddleware(app);
-
-  // Configure Socket.io
-  // app = this.configureSocketIO(app, db);
 
   return app;
 };
