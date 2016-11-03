@@ -214,6 +214,17 @@ module.exports.initSwaggerMiddleware = function(app) {
 };
 
 /**
+ * fix cors
+ */
+module.exports.initCORS = function(app) {
+  app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+  });
+};
+
+/**
  * Initialize the Express application
  */
 module.exports.init = function (db) {
@@ -222,6 +233,8 @@ module.exports.init = function (db) {
 
   // Initialize local variables
   this.initLocalVariables(app);
+
+  this.initCORS(app);
 
   // Initialize Express middleware
   this.initMiddleware(app);
