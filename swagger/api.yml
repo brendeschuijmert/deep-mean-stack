@@ -147,6 +147,26 @@ paths:
           schema:
             $ref: '#/definitions/Error'
   /users/{userId}:
+    get:
+      summary: returns a user
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          type: string
+      description: |
+        Retries a user json object
+      tags:
+        - Users
+      responses:
+        '200':
+          description: User
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
     put:
       summary: update a user
       parameters:
