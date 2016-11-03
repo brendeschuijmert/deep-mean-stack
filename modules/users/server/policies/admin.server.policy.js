@@ -28,7 +28,7 @@ exports.invokeRolesPolicies = function () {
  * Check If Admin Policy Allows
  */
 exports.isAllowed = function (req, res, next) {
-  var role = (req.user) ? req.user.role : ['guest'];
+  var role = (req.user) ? req.user.role : 'guest';
 
   // Check for user roles
   acl.areAnyRolesAllowed(role, req.route.path, req.method.toLowerCase(), function (err, isAllowed) {

@@ -52,12 +52,6 @@ exports.create = function (req, res) {
 exports.update = function (req, res) {
   var user = req.model;
 
-  if (!user.parent.equals(req.user._id)) {
-    return res.status(404).send({
-      message: 'Authorization error, you have no control on this user.'
-    });
-  }
-
   //For security purposes only merge these parameters
   user.firstName = req.body.firstName;
   user.lastName = req.body.lastName;
@@ -80,12 +74,6 @@ exports.update = function (req, res) {
  */
 exports.delete = function (req, res) {
   var user = req.model;
-
-  if (!user.parent || !user.parent.equals(req.user._id)) {
-    return res.status(404).send({
-      message: 'Authorization error, you have no control on this user.'
-    });
-  }
 
   user.remove(function (err) {
     if (err) {
@@ -133,4 +121,19 @@ exports.userByID = function (req, res, next, id) {
     req.model = user;
     next();
   });
+};
+
+/**
+ * Filter middleware
+ */
+exports.validateParent = function (req, res, next) {
+  var user = req.model;
+
+  if (!user.parent || !user.parent.equals(req.user._id)) {
+    return res.status(403).send({
+      message: 'Authorization error, you can not access this user.'
+    });
+  }
+
+  next();
 };
