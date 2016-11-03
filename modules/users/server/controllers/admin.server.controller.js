@@ -81,6 +81,12 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
   var user = req.model;
 
+  if (!user.parent || !user.parent.equals(req.user._id)) {
+    return res.status(404).send({
+      message: 'Authorization error, you have no control on this user.'
+    });
+  }
+
   user.remove(function (err) {
     if (err) {
       return res.status(400).send({
