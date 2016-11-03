@@ -38,6 +38,174 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /profile:
+    get:
+      summary: get profile details
+      description: |
+        Get profile details
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: Current user profile
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: update profile
+      parameters:
+        - name: body
+          description: json object for user
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+                description: First name of the User
+                example: John
+              lastName:
+                type: string
+                description: Last name of the User
+                example: Doe
+              password:
+                type: string
+                description: Password of the User
+                example: Password123!
+      description: |
+        Updates the user and returns the json object
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: User
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /users:
+    get:
+      summary: list users
+      description: |
+        Get the list of users
+      tags:
+        - Users
+      responses:
+        '200':
+          description: An array of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: create a user
+      parameters:
+        - name: body
+          description: json object for user
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+                description: First name of the User
+                example: John
+              lastName:
+                type: string
+                description: Last name of the User
+                example: Doe
+              email:
+                type: string
+                description: Email address of the User
+                example: john.doe@dynamicpush.com
+              password:
+                type: string
+                description: Password of the User
+                example: Password123!
+      description: |
+        Create a user and returns the json object
+      tags:
+        - Users
+      responses:
+        '200':
+          description: User
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /users/{userId}:
+    put:
+      summary: update a user
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for user
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+                description: First name of the User
+                example: John
+              lastName:
+                type: string
+                description: Last name of the User
+                example: Doe
+              password:
+                type: string
+                description: Password of the User
+                example: Password123!
+      description: |
+        Updates the user and returns the json object
+      tags:
+        - Users
+      responses:
+        '200':
+          description: User
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: delete a user
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          type: string
+      description: |
+        Deletes the user
+      tags:
+        - Users
+      responses:
+        '200':
+          description: User
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /applications:
     get:
       summary: list applications
@@ -722,6 +890,15 @@ definitions:
       _id:
         type: string
         description: User ID
+      email:
+        type: string
+        description: First Name
+      lastName:
+        type: string
+        description: Last Name
+      profileImageURL:
+        type: string
+        description: Url of the user's profile avatar
   AppUser:
     type: object
     properties:

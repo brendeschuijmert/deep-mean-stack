@@ -16,21 +16,58 @@ exports.read = function (req, res) {
 };
 
 /**
+ * Create a User
+ */
+exports.create = function (req, res) {
+
+    // Init Variables
+  var user = new User(req.body);
+
+  // Add missing user fields
+  user.provider = 'local';
+  user.parent = req.user;
+  user.role = req.user.role === 'superadmin' ? 'admin' : 'user';
+
+  // Then save the user
+  user.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err),
+        errors: errorHandler.getFieldErrors(err)
+      });
+    } else {
+      // Remove sensitive data before login
+      user.password = undefined;
+      user.salt = undefined;
+
+      res.json(user);
+    }
+  });
+
+};
+
+/**
  * Update a User
  */
 exports.update = function (req, res) {
   var user = req.model;
 
+  if (!user.parent.equals(req.user._id)) {
+    return res.status(404).send({
+      message: 'Authorization error, you have no control on this user.'
+    });
+  }
+
   //For security purposes only merge these parameters
   user.firstName = req.body.firstName;
   user.lastName = req.body.lastName;
-  user.displayName = user.firstName + ' ' + user.lastName;
-  user.roles = req.body.roles;
+  if (req.body.password) user.password = req.body.password;
 
   user.save(function (err) {
     if (err) {
       return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
+        message: errorHandler.getErrorMessage(err),
+        errors: errorHandler.getFieldErrors(err)
       });
     }
 
@@ -59,7 +96,7 @@ exports.delete = function (req, res) {
  * List of Users
  */
 exports.list = function (req, res) {
-  User.find({}, '-salt -password').sort('-created').populate('user', 'displayName').exec(function (err, users) {
+  User.find({ parent: req.user }, '-salt -password').sort({ firstName: 1, lastName: 1 }).populate('user').exec(function (err, users) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
