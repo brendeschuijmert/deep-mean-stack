@@ -72,8 +72,7 @@ function seedTheUser (user) {
       var User = mongoose.model('User');
       // set the new password
       user.password = password;
-
-      if (user.email === seedOptions.seedAdmin.email && process.env.NODE_ENV === 'production') {
+      if (user.email === seedOptions.seedSuperAdmin.email && process.env.NODE_ENV === 'production') {
         checkUserNotExists(user)
           .then(saveUser(user))
           .then(reportSuccess(password))
@@ -120,36 +119,44 @@ module.exports.start = function start(options) {
     seedOptions.logResults = options.logResults;
   }
 
-  if (_.has(options, 'seedUser')) { 
-    seedOptions.seedUser = options.seedUser; 
+  if (_.has(options, 'seedSuperAdmin')) {
+    seedOptions.seedSuperAdmin = options.seedSuperAdmin;
   }
 
   if (_.has(options, 'seedAdmin')) {
     seedOptions.seedAdmin = options.seedAdmin;
   }
 
+  if (_.has(options, 'seedUser')) {
+    seedOptions.seedUser = options.seedUser;
+  }
+
   var User = mongoose.model('User');
   return new Promise(function (resolve, reject) {
 
+    var superAdminAccount = new User(seedOptions.seedSuperAdmin);
     var adminAccount = new User(seedOptions.seedAdmin);
     var userAccount = new User(seedOptions.seedUser);
-    console.log(adminAccount);
-    console.log(userAccount);
-    //If production only seed admin if it does not exist
+
+    adminAccount.parent = superAdminAccount;
+    userAccount.parent = adminAccount;
+
+    //If production only seed superadmin if it does not exist
     if (process.env.NODE_ENV === 'production') {
       User.generateRandomPassphrase()
-        .then(seedTheUser(adminAccount))
+        .then(seedTheUser(superAdminAccount))
         .then(function () {
           resolve();
         })
         .catch(reportError(reject));
     } else {
-      // Add both Admin and User account
-
+      // Add all Super Admin, Admin and User accounts
       User.generateRandomPassphrase()
-        .then(seedTheUser(userAccount))
+        .then(seedTheUser(superAdminAccount))
         .then(User.generateRandomPassphrase)
         .then(seedTheUser(adminAccount))
+        .then(User.generateRandomPassphrase)
+        .then(seedTheUser(userAccount))
         .then(function () {
           resolve();
         })

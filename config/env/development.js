@@ -82,14 +82,13 @@ module.exports = {
     seed: process.env.MONGO_SEED === 'true' ? true : false,
     options: {
       logResults: process.env.MONGO_SEED_LOG_RESULTS === 'false' ? false : true,
-      seedUser: {
-        username: process.env.MONGO_SEED_USER_USERNAME || 'user',
+      seedSuperAdmin: {
+        username: process.env.MONGO_SEED_USER_USERNAME || 'superadmin',
         provider: 'local',
-        email: process.env.MONGO_SEED_USER_EMAIL || 'user@dynamicpush.com',
-        firstName: 'User',
-        lastName: 'Local',
-        displayName: 'User Local',
-        roles: ['user']
+        email: process.env.MONGO_SEED_USER_EMAIL || 'superadmin@dynamicpush.com',
+        firstName: 'Super',
+        lastName: 'Admin',
+        role: 'superadmin'
       },
       seedAdmin: {
         username: process.env.MONGO_SEED_ADMIN_USERNAME || 'admin',
@@ -97,8 +96,15 @@ module.exports = {
         email: process.env.MONGO_SEED_ADMIN_EMAIL || 'admin@dynamicpush.com',
         firstName: 'Admin',
         lastName: 'Local',
-        displayName: 'Admin Devl',
-        roles: ['user', 'admin']
+        role: 'admin'
+      },
+      seedUser: {
+        username: process.env.MONGO_SEED_ADMIN_USERNAME || 'user',
+        provider: 'local',
+        email: process.env.MONGO_SEED_ADMIN_EMAIL || 'user@dynamicpush.com',
+        firstName: 'User',
+        lastName: 'Local',
+        role: 'user'
       }
     }
   }
