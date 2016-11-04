@@ -11,12 +11,12 @@ module.exports = function (app) {
   // Users collection routes
   app.route('/api/teams')
     .get(teamPolicy.isAllowed, team.list)
-    .post(teamPolicy.isAllowed, team.create);
+    .post(teamPolicy.isAllowed, team.validateMemberIdsField, team.validateAccessField, team.create);
 
   // Single user routes
   app.route('/api/teams/:teamId')
     .get(teamPolicy.isAllowed, team.validateOwner, team.read)
-    .put(teamPolicy.isAllowed, team.validateOwner, team.update)
+    .put(teamPolicy.isAllowed, team.validateOwner, team.validateMemberIdsField, team.validateAccessField, team.update)
     .delete(teamPolicy.isAllowed, team.validateOwner, team.delete);
 
   // Finish by binding the user middleware

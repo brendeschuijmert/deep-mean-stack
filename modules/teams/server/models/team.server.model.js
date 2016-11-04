@@ -30,6 +30,18 @@ var TeamSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'User'
   }],
+  access: [{
+    application: {
+      type: Schema.ObjectId,
+      ref: 'Application',
+      required: 'Application is required'
+    },
+    resource: {
+      type: String,
+      trim: true,
+      required: 'Resource is required'
+    }
+  }],
 });
 
 mongoose.model('Team', TeamSchema);
