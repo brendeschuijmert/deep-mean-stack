@@ -155,7 +155,7 @@ paths:
           in: path
           type: string
       description: |
-        Retries a user json object
+        Retrieves a user json object
       tags:
         - Users
       responses:
@@ -222,6 +222,135 @@ paths:
           description: User
           schema:
             $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /teams:
+    get:
+      summary: Lists Teams
+      description: |
+        Get the list of teams
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: An array of teams
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Team'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Creates a Team
+      parameters:
+        - name: body
+          description: json object for team
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the Team
+                example: Alpha Team
+              member_ids:
+                type: array
+                description: List of member user ids
+                items:
+                  type: string
+                  example: 481b64c08dd8c56477ed2e29
+      description: |
+        Create a team and returns the json object
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: Team
+          schema:
+            $ref: '#/definitions/Team'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /teams/{teamId}:
+    get:
+      summary: Returns a Team
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          type: string
+      description: |
+        Retrieves a team json object
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: Team
+          schema:
+            $ref: '#/definitions/Team'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Updates a Team
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for team
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the Team
+                example: Alpha Team
+              member_ids:
+                type: array
+                description: List of member user ids
+                items:
+                  type: string
+                  example: 481b64c08dd8c56477ed2e29
+      description: |
+        Updates the team and returns the json object
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: Team
+          schema:
+            $ref: '#/definitions/Team'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Deletes a Team
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          type: string
+      description: |
+        Deletes the Team
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: Team
+          schema:
+            $ref: '#/definitions/Team'
         default:
           description: Unexpected error
           schema:
@@ -919,6 +1048,25 @@ definitions:
       profileImageURL:
         type: string
         description: Url of the user's profile avatar
+  Team:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: Team ID
+      name:
+        type: string
+        description: First Name
+      owner:
+        type: string
+        description: Owner of the Team
+        $ref: '#/definitions/User'
+      members:
+        type: array
+        description: List of member usrs
+        items:
+            type: string
+            $ref: '#/definitions/User'
   AppUser:
     type: object
     properties:
