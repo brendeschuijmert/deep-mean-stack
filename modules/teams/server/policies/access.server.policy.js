@@ -15,13 +15,10 @@ exports.invokeRolesPolicies = function () {
   acl.allow([{
     roles: ['admin'],
     allows: [{
-      resources: '/api/teams',
-      permissions: '*'
-    }, {
-      resources: '/api/teams/:teamId',
-      permissions: '*'
-    }, {
       resources: '/api/teams/:teamId/access',
+      permissions: '*'
+    }, {
+      resources: '/api/teams/:teamId/access/:accessId',
       permissions: '*'
     }]
   }]);

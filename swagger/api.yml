@@ -258,12 +258,10 @@ paths:
                 type: string
                 description: Name of the Team
                 example: Alpha Team
-              member_ids:
-                type: array
-                description: List of member user ids
-                items:
-                  type: string
-                  example: 481b64c08dd8c56477ed2e29
+              description:
+                type: string
+                description: Name of the Team
+                example: This is a team of marketing analysts
       description: |
         Create a team and returns the json object
       tags:
@@ -316,12 +314,10 @@ paths:
                 type: string
                 description: Name of the Team
                 example: Alpha Team
-              member_ids:
-                type: array
-                description: List of member user ids
-                items:
-                  type: string
-                  example: 481b64c08dd8c56477ed2e29
+              description:
+                type: string
+                description: Name of the Team
+                example: This is a team of marketing analysts
       description: |
         Updates the team and returns the json object
       tags:
@@ -344,6 +340,128 @@ paths:
           type: string
       description: |
         Deletes the Team
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: Team
+          schema:
+            $ref: '#/definitions/Team'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /teams/{teamId}/access:
+    get:
+      summary: Returns a Team Access List
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          type: string
+      description: |
+        Retrieves team access list json object
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: An array of team access
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TeamAccess'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Creates a TeamAccess
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for team
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              application:
+                type: string
+                description: Associated application id
+                example: 581c51dd62bf42c07f333154
+              resource:
+                type: string
+                description: Resource name
+                example: analytics
+      description: |
+        Create a team access and returns the whole team object
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: Team
+          schema:
+            $ref: '#/definitions/Team'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /teams/{teamId}/access/{accessId}:
+    put:
+      summary: Updates a TeamAccess
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          type: string
+        - name: accessId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for team
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              application:
+                type: string
+                description: Associated application id
+                example: 581c51dd62bf42c07f333154
+              resource:
+                type: string
+                description: Resource name
+                example: analytics
+      description: |
+        Create a team access and returns the whole team object
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: Team
+          schema:
+            $ref: '#/definitions/Team'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Deletes a Team Access
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          type: string
+        - name: accessId
+          required: true
+          in: path
+          type: string
+      description: |
+        Deletes the Team Access
       tags:
         - Teams
       responses:
@@ -1056,7 +1174,10 @@ definitions:
         description: Team ID
       name:
         type: string
-        description: First Name
+        description: Team Name
+      description:
+        type: string
+        description: Description
       owner:
         type: string
         description: Owner of the Team
@@ -1065,8 +1186,22 @@ definitions:
         type: array
         description: List of member usrs
         items:
-            type: string
             $ref: '#/definitions/User'
+      access:
+        type: array
+        description: List of assigned access
+        items:
+            $ref: '#/definitions/TeamAccess'
+  TeamAccess:
+    type: object
+    properties:
+      application:
+        type: object
+        description: Application ID
+        $ref: '#/definitions/Application'
+      resource:
+        type: string
+        description: Resource
   AppUser:
     type: object
     properties:
