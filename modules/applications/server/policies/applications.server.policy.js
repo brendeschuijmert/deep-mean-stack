@@ -46,8 +46,7 @@ exports.invokeRolesPolicies = function () {
  * Check If Applications Policy Allows
  */
 exports.isAllowed = function (req, res, next) {
-  console.log(req.user);
-  var roles = (req.user) ? req.user.roles : ['guest'];
+  var role = (req.user) ? req.user.role : 'guest';
 
   // If an application is being processed and the current user created it then allow any manipulation
   if (req.application && req.user && req.application.user && req.application.user._id === req.user._id) {
@@ -55,7 +54,7 @@ exports.isAllowed = function (req, res, next) {
   }
 
   // Check for user roles
-  acl.areAnyRolesAllowed(roles, req.route.path, req.method.toLowerCase(), function (err, isAllowed) {
+  acl.areAnyRolesAllowed(role, req.route.path, req.method.toLowerCase(), function (err, isAllowed) {
     if (err) {
       // An authorization error occurred.
       return res.status(500).send('Unexpected authorization error');
