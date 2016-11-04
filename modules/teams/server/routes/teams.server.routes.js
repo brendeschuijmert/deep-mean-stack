@@ -8,16 +8,16 @@ var teamPolicy = require('../policies/team.server.policy'),
 
 module.exports = function (app) {
 
-  // Users collection routes
-  app.route('/api/teams')
-    .get(teamPolicy.isAllowed, team.list)
-    .post(teamPolicy.isAllowed, team.validateMemberIdsField, team.validateAccessField, team.create);
+  // Teams collection routes
+  app.route('/api/teams').all(teamPolicy.isAllowed)
+    .get(team.list)
+    .post(team.create);
 
-  // Single user routes
-  app.route('/api/teams/:teamId')
-    .get(teamPolicy.isAllowed, team.validateOwner, team.read)
-    .put(teamPolicy.isAllowed, team.validateOwner, team.validateMemberIdsField, team.validateAccessField, team.update)
-    .delete(teamPolicy.isAllowed, team.validateOwner, team.delete);
+  // Single team routes
+  app.route('/api/teams/:teamId').all(teamPolicy.isAllowed)
+    .get(team.read)
+    .put(team.update)
+    .delete(team.delete);
 
   // Finish by binding the user middleware
   app.param('teamId', team.teamByID);

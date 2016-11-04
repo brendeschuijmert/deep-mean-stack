@@ -22,6 +22,10 @@ var TeamSchema = new Schema({
     trim: true,
     required: 'Team name is required'
   },
+  description: {
+    type: String,
+    trim: true,
+  },
   owner: {
     type: Schema.ObjectId,
     ref: 'User'
