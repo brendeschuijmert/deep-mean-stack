@@ -473,6 +473,78 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /teams/{teamId}/members:
+    get:
+      summary: Returns a Team Member List
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          type: string
+      description: |
+        Retrieves team members list json object
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: An array of team members
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /teams/{teamId}/members/{userId}:
+    put:
+      summary: Adds a member to the team
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          type: string
+        - name: userId
+          required: true
+          in: path
+          type: string
+      description: |
+        Adds the user to the team and returns the whole team object
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: Team
+          schema:
+            $ref: '#/definitions/Team'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Deletes a member from the team
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          type: string
+        - name: userId
+          required: true
+          in: path
+          type: string
+      description: |
+        Deletes a member from the team
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: Team
+          schema:
+            $ref: '#/definitions/Team'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /applications:
     get:
       summary: list applications
