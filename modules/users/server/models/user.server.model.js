@@ -96,6 +96,10 @@ var UserSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Application'
   }],
+  team: {
+    type: Schema.ObjectId,
+    ref: 'Team'
+  },
   updated: {
     type: Date
   },
