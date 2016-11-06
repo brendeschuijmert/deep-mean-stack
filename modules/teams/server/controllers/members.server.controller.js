@@ -23,22 +23,33 @@ exports.list = function (req, res) {
  */
 exports.create = function (req, res) {
   var team = req.team;
+  var member = req.member;
   var existing = team.members.findIndex(function(elem) {
-    return elem._id.equals(req.member._id);
+    return elem._id.equals(member._id);
   });
-  if (existing < 0) team.members.push(req.member);
+  if (existing < 0) team.members.push(member);
   team.members = team.members.filter(function(item, pos, self) {
     return self.indexOf(item) === pos;
   });
-  team.save(function (err) {
+  member.team = team;
+  member.save(function (err){
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err),
         errors: errorHandler.getFieldErrors(err)
       });
-    } else {
-      res.json(team);
     }
+
+    team.save(function (err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err),
+          errors: errorHandler.getFieldErrors(err)
+        });
+      } else {
+        res.json(team);
+      }
+    });
   });
 };
 
@@ -50,15 +61,25 @@ exports.delete = function (req, res) {
   var member = req.member;
 
   team.members.splice(member, 1);
-  team.save(function (err) {
+  member.team = undefined;
+  member.save(function (err){
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err),
         errors: errorHandler.getFieldErrors(err)
       });
-    } else {
-      res.json(team);
     }
+
+    team.save(function (err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err),
+          errors: errorHandler.getFieldErrors(err)
+        });
+      } else {
+        res.json(team);
+      }
+    });
   });
 };
 
