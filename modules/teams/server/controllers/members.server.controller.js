@@ -105,8 +105,6 @@ exports.memberByID = function (req, res, next, id) {
       });
     }
 
-    user.salt = undefined;
-    user.password = undefined;
     req.member = user;
     next();
   });
