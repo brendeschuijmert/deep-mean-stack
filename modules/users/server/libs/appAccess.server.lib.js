@@ -18,19 +18,21 @@ exports.getAppAccess = function(application, resource, user) {
       } else {
         if (!user.team) {
           // Not allowed because the user is not in any team.
-          resolve(false);
+          reject(new Error('Access is not allowed to this resource'));
         } else {
           Team.findById(user.team).populate('access').exec(function (err, team) {
             if (err) {
               reject(err);
             } else {
-              var access = _.find(team.access, { resource: resource, application: application._id });
+              var access = _.find(team.access, function(item) {
+                return (item.resource === '*' || item.resource === resource) && application._id.equals(item.application);
+              });
               if (access) {
                 // Access is allowed
                 resolve(true);
               } else {
                 // Access is NOT allowed
-                resolve(false);
+                reject(new Error('Access is not allowed to this resource'));
               }
             }
           });
