@@ -20,16 +20,32 @@ var TeamSchema = new Schema({
   name: {
     type: String,
     trim: true,
-    required: 'Team name can not be blank'
+    required: 'Team name is required'
   },
-  applications: [{
-    type: Schema.ObjectId,
-    ref: 'Application'
-  }],
-  users: [{
+  description: {
+    type: String,
+    trim: true,
+  },
+  owner: {
     type: Schema.ObjectId,
     ref: 'User'
-  }]
+  },
+  members: [{
+    type: Schema.ObjectId,
+    ref: 'User'
+  }],
+  access: [{
+    application: {
+      type: Schema.ObjectId,
+      ref: 'Application',
+      required: 'Application is required'
+    },
+    resource: {
+      type: String,
+      trim: true,
+      required: 'Resource is required'
+    }
+  }],
 });
 
 mongoose.model('Team', TeamSchema);

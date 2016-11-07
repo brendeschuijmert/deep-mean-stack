@@ -46,3 +46,18 @@ exports.getErrorMessage = function (err) {
 
   return message;
 };
+
+/**
+ * Get errors list of mongoose fields from error object
+ */
+exports.getFieldErrors = function (err) {
+  var errors = {};
+
+  for (var errName in err.errors) {
+    if (err.errors[errName].message) {
+      errors[errName] = err.errors[errName].message;
+    }
+  }
+
+  return errors;
+};
