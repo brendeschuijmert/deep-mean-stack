@@ -71,13 +71,13 @@ var UserSchema = new Schema({
   },
   providerData: {},
   additionalProvidersData: {},
-  roles: {
-    type: [{
-      type: String,
-      enum: ['user', 'admin']
-    }],
-    default: ['user'],
-    required: 'Please provide at least one role'
+  parent: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  },
+  role: {
+    type: String,
+    required: 'Role is required'
   },
   phone: {
     type: String,
@@ -96,6 +96,10 @@ var UserSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Application'
   }],
+  team: {
+    type: Schema.ObjectId,
+    ref: 'Team'
+  },
   updated: {
     type: Date
   },
