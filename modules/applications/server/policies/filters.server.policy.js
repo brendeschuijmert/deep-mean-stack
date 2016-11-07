@@ -3,10 +3,13 @@
 /**
  * Module dependencies.
  */
-var acl = require('acl');
+var acl = require('acl'),
+  path = require('path');
 
 // Using the memory backend
 acl = new acl(new acl.memoryBackend());
+
+var appAccessLib = require(path.resolve('./modules/users/server/libs/appAccess.server.lib'));
 
 /**
  * Invoke Applications Permissions
@@ -30,15 +33,6 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/applications/:applicationId/filters/:segmentId',
       permissions: '*'
     }]
-  }, {
-    roles: ['guest'],
-    allows: [{
-      resources: '/api/applications/:applicationId/filters',
-      permissions: []
-    }, {
-      resources: '/api/applications/:applicationId/filters/:segmentId',
-      permissions: []
-    }]
   }]);
 };
 
@@ -55,8 +49,21 @@ exports.isAllowed = function (req, res, next) {
       return res.status(500).send('Unexpected authorization error');
     } else {
       if (isAllowed) {
-        // Access granted! Invoke next middleware
-        return next();
+        // Access to the endpoint is granted! Check resource access now.
+        return appAccessLib.getAppAccess(req.application, 'filters', req.user)
+        .then(function(allowed){
+          if (allowed) {
+            return next();
+          } else {
+            return res.status(403).json({
+              message: 'User is not authorized to access this resource'
+            });
+          }
+        }).catch(function(err){
+          return res.status(403).json({
+            message: 'User is not authorized to access this resource'
+          });
+        });
       } else {
         return res.status(403).json({
           message: 'User is not authorized'
