@@ -103,6 +103,10 @@ var CampaignSchema = new Schema({
   segment: {
     type: Schema.ObjectId,
     ref: 'Segment'
+  },
+  application: {
+    type: Schema.ObjectId,
+    ref: 'Application'
   }
 });
 

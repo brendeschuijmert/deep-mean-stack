@@ -73,7 +73,7 @@ exports.authenticate = function (req, res) {
 
 // authentication middleware
 exports.applicationByToken = function (req, res, next) {
-  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+  var token = req.body.mobileToken || req.query.mobileToken || req.headers.Authorization;
 
   // decode token
   if (token) {

@@ -47,7 +47,7 @@ exports.update = function (req, res) {
   //TODO: Support for image
   application = _.extend(
     application,
-    _.pick(req.body, 'googleApiKey', 'apiKey', 'apiSecret', 'packageName', 'senderId')
+    _.pick(req.body, 'fcmServerKey', 'apiKey', 'apiSecret', 'packageName', 'senderId')
   );
 
   application.save(function (err) {

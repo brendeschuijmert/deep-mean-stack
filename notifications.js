@@ -2,20 +2,22 @@ var mongooseLib = require('./config/lib/mongoose');
 var mongoose = require('mongoose');
 var _ = require('lodash');
 var FCM = require('fcm-push');
+var Promise = require('bluebird');
 
 mongooseLib.loadModels();
 mongooseLib.connect(function (db) {
+  console.log('connected to db');
   var Notification = mongoose.model('Notification');
   Notification.find({
-    createdAt: {
-      $lte: new Date()
-    },
+    // createdAt: {
+    //   $lte: new Date()
+    // },
     status: 0 // not sent
   }).populate([{
     path: 'appUser',
-    populate: {
+    populate: [{
       path: 'userDevice'
-    }
+    }]
   }, {
     path: 'campaign',
     populate: [
@@ -23,14 +25,24 @@ mongooseLib.connect(function (db) {
       { path: 'animation' }
     ]
   }]).exec(function(err, notifications) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    var promises = [];
+    var successCount = 0;
+    var errorCount = 0;
     // send android, ios notifications respectively
     _.each(notifications, function(notification) {
       var campaign = notification.campaign;
       if (campaign.animation) {
         campaign.animation.expiresAt = campaign.animation.duration * campaign.loopCount + (campaign.loopCount - 1) * campaign.loopDelay;
       }
-      var fcm = FCM(campaign.application.fcmServerKey);
-      var msgData = _.pick(campaign, 'animation', 'platform', 'message', 'messagePosition', 'url', 'campaignType');
+      var fcm = new FCM(campaign.application.fcmServerKey);
+      var msgData = _.pick(campaign, 'animation', 'message', 'messagePosition', 'url', 'campaignType');
+      // @TODO implement display type // campaign.platform.displayType
+
       var androidMessage = {
         to: notification.appUser.userDevice.deviceToken,
         collapse_key: notification.campaign._id, // we use campagin id as collapse key
@@ -48,22 +60,29 @@ mongooseLib.connect(function (db) {
 
       switch (notification.appUser.userDevice.devicePlatform) {
         case 'Android':
-          fcm.send(androidMessage, function(err, response) {
-            if(err) {
-              notification.status = 1;
-              notification.save();
-              console.log('Something has gone wrong !');
-            } else {
-              notification.status = 2;
-              notification.save();
-              console.log('Successfully sent!', response);
-            }
-          });
+          console.log('sending', JSON.stringify(androidMessage));
+          promises.push(fcm.send(androidMessage).then(function(response) {
+            notification.status = 2;
+            console.log('Successfully sent!', response);
+            successCount += 1;
+            return notification.save();
+          }).catch(function(err) {
+            notification.status = 1;
+            console.log('Something has gone wrong !', err);
+            errorCount += 1;
+            return notification.save();
+          }));
           break;
         case 'iOS':
           // @TODO
           break;
       }
+    });
+
+    Promise.all(promises).then(function() {
+      console.log('Sent notifications to ' + successCount + ' users');
+      console.log('Error on ' + errorCount + ' users');
+      process.exit(0);
     });
   });
 });

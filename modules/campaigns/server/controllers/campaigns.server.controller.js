@@ -73,6 +73,7 @@ exports.uploadImage = function (req, res) {
         }
 
         if (image) {
+          // @TODO FIX below. animation is Image object and image is url
           campaign.animation = image;
           campaign.save(function (err) {
             if (err) {
