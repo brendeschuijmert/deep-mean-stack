@@ -581,14 +581,10 @@ paths:
                 type: string
                 description: Mobile app package name
                 example: com.appelago.paramount
-              googleApiKey:
+              fcmServerKey:
                 type: string
-                description: Google API Key used for push notifications
+                description: FCM server key used for Android push notifications
                 example: AIzaSyDhAtPeiK9i8fIUodzRuB2H7BLHFEbxOk8
-              senderId:
-                type: string
-                description: Used for create gcm token in mobile app
-                example: 525540592108
       description: |
         Create an application and generates apiKey and apiSecret
       tags:
@@ -1220,9 +1216,6 @@ definitions:
       googleApiKey:
         type: string
         description: Google API Key used for push notifications
-      senderId:
-        type: string
-        description: Used for create gcm token in mobile app
   User:
     type: object
     properties:
@@ -1287,7 +1280,7 @@ definitions:
   UserDevice:
     type: object
     properties:
-      gcmToken:
+      deviceToken:
         type: string
       email:
         type: string
