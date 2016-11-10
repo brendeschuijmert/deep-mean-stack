@@ -13,11 +13,18 @@ acl = new acl(new acl.memoryBackend());
  */
 exports.invokeRolesPolicies = function () {
   acl.allow([{
-    roles: ['admin', 'user'],
+    roles: ['admin'],
     allows: [{
       resources: '/api/applications/:applicationId/campaigns/:campaignId/schedule',
       permissions: '*'
-    }]
+    }],
+  },
+  {
+    roles: ['user'],
+    allows: [{
+      resources: '/api/applications/:applicationId/campaigns/:campaignId/schedule',
+      permissions: '*'
+    }],
   }]);
 };
 
@@ -25,12 +32,7 @@ exports.invokeRolesPolicies = function () {
  * Check If Applications Policy Allows
  */
 exports.isAllowed = function (req, res, next) {
-  var roles = (req.user) ? req.user.roles : ['guest'];
-
-  // If a campaign is being processed and the current user created it then allow any manipulation
-  if (req.campaign && req.user && req.campaign.user && req.campaign.user._id === req.user._id) {
-    return next();
-  }
+  var roles = (req.user) ? req.user.role : ['guest'];
 
   // Check for user roles
   acl.areAnyRolesAllowed(roles, req.route.path, req.method.toLowerCase(), function (err, isAllowed) {
