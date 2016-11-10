@@ -30,6 +30,7 @@
     "express": "^4.13.1",
     "express-jwt": "^5.1.0",
     "express-session": "^1.11.3",
+    "fcm-push": "^1.1.2",
     "file-stream-rotator": "~0.0.6",
     "forever": "~0.14.2",
     "generate-password": "^1.1.1",

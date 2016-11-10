@@ -40,12 +40,7 @@ var ApplicationSchema = new Schema({
     default: '',
     trim: true
   },
-  googleApiKey: {
-    type: String,
-    default: '',
-    trim: true
-  },
-  senderId: {
+  fcmServerKey: {
     type: String,
     default: '',
     trim: true

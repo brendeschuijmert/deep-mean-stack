@@ -21,7 +21,7 @@ var UserDeviceSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'AppUser'
   },
-  gcmToken: {
+  deviceToken: {
     type: String,
     trim: true,
     default: ''
