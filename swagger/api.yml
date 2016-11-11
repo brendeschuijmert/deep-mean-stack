@@ -22,10 +22,10 @@ paths:
             properties:
               email:
                 type: string
-                example: user@dynamicpush.com
+                example: admin@dynamicpush.com
               password:
                 type: string
-                example: qnxTzbSgCqycJHRV8S75DMmwH5gFrKuR
+                example: pneFkBRTnKUQtPJ1AzvgKN8zHj5rGj4W5dPK
       description: let the user sign in and have access to web apis
       tags:
         - Auth
