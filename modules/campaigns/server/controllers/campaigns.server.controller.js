@@ -19,7 +19,7 @@ var path = require('path'),
  * Create a campaign
  */
 exports.create = function (req, res) {
-  var campaignJson = _.pick(req.body, 'title', 'tags', 'platform', 'segment');
+  var campaignJson = _.pick(req.body, 'title', 'tags', 'platform');
   var campaign = new Campaign(campaignJson);
   campaign.application = req.application;
 
