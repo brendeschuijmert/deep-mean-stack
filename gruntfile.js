@@ -305,7 +305,7 @@ module.exports = function (grunt) {
     var nativeObject = grunt.file.readYAML(path.resolve('./swagger/api.yml'));
     var done = this.async();
     if (config.url) {
-      nativeObject.host = config.url + (config.port?':' + config.port: '');
+      nativeObject.host = config.url + (config.port && (config.url === 'localhost') ? ':' + config.port: '');
     }
     grunt.file.write(path.resolve('./public/api.json'), JSON.stringify(nativeObject));
     done();
