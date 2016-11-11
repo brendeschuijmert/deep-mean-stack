@@ -13,7 +13,7 @@ module.exports = {
     debug: process.env.MONGODB_DEBUG || false
   },
   url: 'dev.dynamicpush.com',
-  port: process.env.PORT || 3000,
+  port: process.env.PORT || 5000,
   log: {
     // logging with Morgan - https://github.com/expressjs/morgan
     // Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'
