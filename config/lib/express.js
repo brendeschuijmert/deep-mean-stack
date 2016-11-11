@@ -18,6 +18,7 @@ var config = require('../config'),
   flash = require('connect-flash'),
   consolidate = require('consolidate'),
   swaggerMiddleware = require('swagger-express-middleware'),
+  cors = require('cors'),
   path = require('path');
 
 /**
@@ -217,12 +218,7 @@ module.exports.initSwaggerMiddleware = function(app) {
  * fix cors
  */
 module.exports.initCORS = function(app) {
-  app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', '*');
-    next();
-  });
+  app.use(cors());
 };
 
 /**
