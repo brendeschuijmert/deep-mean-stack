@@ -1213,9 +1213,9 @@ definitions:
       apiSecret:
         type: string
         description: Secret used for mobile api
-      googleApiKey:
+      fcmServerKey:
         type: string
-        description: Google API Key used for push notifications
+        description: FCM Server Key used for push notifications on Android
   User:
     type: object
     properties:

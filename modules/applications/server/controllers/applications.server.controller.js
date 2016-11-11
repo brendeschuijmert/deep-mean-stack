@@ -14,7 +14,7 @@ var path = require('path'),
  * Create a application
  */
 exports.create = function (req, res) {
-  var appJson = _.pick(req.body, 'packageName', 'appName', 'googleApiKey', 'senderId');
+  var appJson = _.pick(req.body, 'packageName', 'appName', 'fcmServerKey', 'senderId');
   var application = new Application(appJson);
   application.apiSecret = randomstring.generate(20);
   application.apiKey = randomstring.generate(20);
