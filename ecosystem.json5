@@ -2,7 +2,7 @@
   apps: [
   {
     name: "DP-MEAN",
-    script: "node_modules/grunt-cli/bin/grunt",
+    script: "server.js",
     env_production: {
       NODE_ENV: "production"
     },
@@ -20,7 +20,7 @@
       repo: "git@bitbucket.org:cmodels/dp-mean-stack.git",
       path: "/srv/dp-mean",
       "pre-deploy": "",
-      "post-deploy": "npm install; bower install; pm2 startOrRestart ecosystem.json5 --env development"
+      "post-deploy": "nvm use 6.9; npm install; bower install; grunt build; pm2 startOrRestart ecosystem.json5 --env development"
     }
   }
 }
