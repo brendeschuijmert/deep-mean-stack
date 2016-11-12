@@ -81,3 +81,6 @@ pem/
 
 # api.json
 public/api.json
+
+# notification status file
+.notifications.json

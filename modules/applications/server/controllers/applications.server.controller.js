@@ -82,8 +82,9 @@ exports.delete = function (req, res) {
  * List of Applications
  */
 exports.list = function (req, res) {
-  //TODO: support for UAC
-  Application.find().sort('-created').exec(function (err, applications) {
+  Application.find({
+    user: req.user.role === 'USER' ? req.user.parent : req.user
+  }).sort('-created').exec(function (err, applications) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
