@@ -23,6 +23,10 @@ module.exports = {
       fileSize: 1*1024*1024 // Max file size in bytes (1 MB)
     }
   },
+  redis: {
+    host:      '127.0.0.1',
+    port:      6379
+  },
   aws: {
     bucket: 'dp-mean',
     accessKeyId: 'AKIAJ7MS2AC3YICO235Q',

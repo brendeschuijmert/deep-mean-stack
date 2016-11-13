@@ -10,7 +10,6 @@ var path = require('path'),
   chalk = require('chalk'),
   CampaignSchedule = mongoose.model('CampaignSchedule'),
   scheduler = require('../libs/scheduler.server.lib'),
-  pushNotificationsLib = require(path.resolve('./modules/mobile/server/libs/pushNotifications.server.lib')),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
@@ -21,48 +20,21 @@ exports.save = function (req, res) {
   var campaignSchedule;
   if (req.campaign.deliverySchedule) {
     campaignSchedule = _.extend(req.campaign.deliverySchedule, jsonObj);
-    if (campaignSchedule.jobId) {
-      try {
-        crontab.cancelJob(campaignSchedule.jobId);
-      } catch(e) {
-        console.log(chalk.bold.red('Crontab: job id not found'));
-      }
-    }
   } else {
     campaignSchedule = new CampaignSchedule(jsonObj);
     campaignSchedule.campaign = req.campaign._id;
+    req.campaign.deliverySchedule = campaignSchedule;
   }
 
-  // scheduling job with crontab
-  var jobId;
-  if (campaignSchedule.frequency === 'immediate') {
-    jobId = crontab.scheduleJob('* * * * *', pushNotificationsLib.send, [req.application, req.campaign], null, false);
-  } else { // scheduled jobs
-    jobId = crontab.scheduleJob(scheduler.getCrontabString(jsonObj), pushNotificationsLib.send, [req.application, req.campaign]);
-  }
-  campaignSchedule.jobId = jobId;
-
-  campaignSchedule.save(function (err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      if (!req.campaign.deliverySchedule) {
-        req.campaign.deliverySchedule = campaignSchedule._id;
-        req.campaign.save(function(err) {
-          if (err) {
-            return res.status(400).send({
-              message: errorHandler.getErrorMessage(err)
-            });
-          } else {
-            res.json(campaignSchedule);
-          }
-        });
-      } else {
-        res.json(campaignSchedule);
-      }
-    }
+  var promise = req.campaign.isActive && req.campaign.isPaused ? scheduler.scheduleNotifications(req.campaign, req.application) : campaignSchedule.save();
+  promise.then(function() {
+    return req.campaign.save();
+  }).then(function() {
+    res.json(campaignSchedule);
+  }).catch(function(err) {
+    return res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
   });
 };
 
@@ -73,13 +45,7 @@ exports.delete = function (req, res) {
   var campaignSchedule = req.campaign.deliverySchedule;
   if (campaignSchedule) {
     // unschedule if any job is scheduled
-    if (campaignSchedule.jobId) {
-      try {
-        crontab.cancelJob(campaignSchedule.jobId);
-      } catch(e) {
-        console.log(chalk.bold.red('Crontab: job id not found'));
-      }
-    }
+    scheduler.cancelJob(CampaignSchedule);
 
     campaignSchedule.remove(function(err){
       if (err) {
