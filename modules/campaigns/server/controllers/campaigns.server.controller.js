@@ -113,7 +113,7 @@ exports.update = function (req, res) {
       console.log('scheduling notifications');
       promise = scheduler.scheduleNotifications(req.campaign, req.application, true);
     }
-  } else if (campaign.expiresAt && moment().diff(campaign.expiresAt) > 0) {
+  } else if (req.body.expiresAt && moment().diff(req.body.expiresAt) > 0) {
     // or if campaign is expired, cancel job
     console.log('job has expired. cancelling job');
     scheduler.cancelJob(campaign.deliverySchedule);
