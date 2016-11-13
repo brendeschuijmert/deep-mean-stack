@@ -26,7 +26,7 @@ exports.save = function (req, res) {
     req.campaign.deliverySchedule = campaignSchedule;
   }
 
-  var promise = req.campaign.isActive && req.campaign.isPaused ? scheduler.scheduleNotifications(req.campaign, req.application) : campaignSchedule.save();
+  var promise = req.campaign.isActive && !req.campaign.isPaused ? scheduler.scheduleNotifications(req.campaign, req.application) : campaignSchedule.save();
   promise.then(function() {
     return req.campaign.save();
   }).then(function() {
