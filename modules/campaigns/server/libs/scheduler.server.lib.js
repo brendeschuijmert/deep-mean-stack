@@ -52,6 +52,7 @@ function cancelJob(deliverySchedule) {
   if (deliverySchedule && deliverySchedule.jobId) {
     try {
       crontab.cancelJob(deliverySchedule.jobId);
+      console.log(chalk.green('Successfully canceled cron job'));
     } catch(e) {
       console.log(chalk.red('Crontab job cancelling failed. ' + deliverySchedule.jobId));
     }
@@ -109,6 +110,7 @@ function scheduleNotifications(campaign, application, isReschedule) {
     crontab.scheduleJob('* * * * *', pushNotificationsLib.send, [application, campaign], null, false);
   } else {
     // scheduled jobs
+    console.log(getCrontabString(deliverySchedule));
     jobId = crontab.scheduleJob(getCrontabString(deliverySchedule), pushNotificationsLib.send, [application, campaign]);
     jobId = crontab.scheduleJob(getCrontabString(deliverySchedule), checkSchedule, [campaign]); // another scheuled job to check expired date
   }
