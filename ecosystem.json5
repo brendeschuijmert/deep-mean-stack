@@ -1,15 +1,25 @@
 {
   apps: [
-  {
-    name: "DP-MEAN",
-    script: "server.js",
-    env_production: {
-      NODE_ENV: "production"
+    {
+      name: "DP-MEAN",
+      script: "server.js",
+      env_production: {
+        NODE_ENV: "production"
+      },
+      env_development: {
+        NODE_ENV: "development"
+      }
     },
-    env_development: {
-      NODE_ENV: "development"
+    {
+      name: "Push notifications service",
+      script: "notifications.js",
+      env_production: {
+        NODE_ENV: "production"
+      },
+      env_development: {
+        NODE_ENV: "development"
+      }
     }
-  }
   ],
   deploy: {
     development: {
@@ -20,7 +30,7 @@
       repo: "git@bitbucket.org:cmodels/dp-mean-stack.git",
       path: "/srv/dp-mean",
       "pre-deploy": "",
-      "post-deploy": "nvm use 6.9; npm install; bower install; grunt build; pm2 startOrRestart ecosystem.json5 --env development"
+      "post-deploy": "nvm use 6.9; npm install; grunt build; pm2 startOrRestart ecosystem.json5 --env development"
     }
   }
 }

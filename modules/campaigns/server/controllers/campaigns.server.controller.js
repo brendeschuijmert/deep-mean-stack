@@ -9,9 +9,11 @@ var path = require('path'),
   randomstring = require('randomstring'),
   _ = require('lodash'),
   multer = require('multer'),
+  moment = require('moment'),
   Application = mongoose.model('Application'),
   Campaign = mongoose.model('Campaign'),
   config = require(path.resolve('./config/config')),
+  scheduler = require('../libs/scheduler.server.lib'),
   ImageLib = require(path.resolve('./modules/core/server/libs/images.server.lib')),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
@@ -95,21 +97,44 @@ exports.uploadImage = function (req, res) {
  */
 exports.update = function (req, res) {
   var campaign = req.campaign;
+  var promise = Promise.resolve();
 
-  //TODO: Support for image
+  if ((req.body.hasOwnProperty('isPaused') && req.body.isPaused !== campaign.isPaused) ||
+    (req.body.hasOwnProperty('isActive') && req.body.isActive !== campaign.isActive)
+  ){
+    if (req.body.isPaused || !req.body.isActive) {
+      console.log('cancelling notifications');
+      // if campaign become paused or inactive, cancel scheduled job
+      scheduler.cancelJob(campaign.deliverySchedule);
+      campaign.deliverySchedule.jobId = '';
+      promise = campaign.deliverySchedule.save();
+    } else if (!req.body.isPaused && req.body.isActive) {
+      // if campaign becomes active and unpaused, schedule notifications
+      console.log('scheduling notifications');
+      promise = scheduler.scheduleNotifications(req.campaign, req.application, true);
+    }
+  } else if (campaign.expiresAt && moment().diff(campaign.expiresAt) > 0) {
+    // or if campaign is expired, cancel job
+    console.log('job has expired. cancelling job');
+    scheduler.cancelJob(campaign.deliverySchedule);
+    campaign.deliverySchedule.jobId = '';
+    promise = campaign.deliverySchedule.save();
+  }
+
+
   campaign = _.extend(
     campaign,
     _.pick(req.body, 'isPaused', 'isActive', 'message', 'messagePosition', 'expiresAt', 'deliveryAction', 'tags', 'title', 'platform', 'loopCount', 'loopDelay', 'url', 'campaignType', 'segment')
   );
 
-  campaign.save(function (err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.json(campaign);
-    }
+  promise.then(function() {
+    return campaign.save();
+  }).then(function() {
+    res.json(campaign);
+  }).catch(function(err) {
+    return res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
   });
 };
 
@@ -134,7 +159,6 @@ exports.delete = function (req, res) {
  * List of Campaigns
  */
 exports.list = function (req, res) {
-  //TODO: support for UAC
   Campaign.find().populate({
     path: 'application',
     match: {
