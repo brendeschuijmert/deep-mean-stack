@@ -102,7 +102,7 @@ exports.update = function (req, res) {
   if ((req.body.hasOwnProperty('isPaused') && req.body.isPaused !== campaign.isPaused) ||
     (req.body.hasOwnProperty('isActive') && req.body.isActive !== campaign.isActive)
   ){
-    if (req.body.isPaused || !req.body.isActive) {
+    if ((req.body.isPaused || !req.body.isActive) && campaign.deliverySchedule) {
       console.log('cancelling notifications');
       // if campaign become paused or inactive, cancel scheduled job
       scheduler.cancelJob(campaign.deliverySchedule);
@@ -113,7 +113,7 @@ exports.update = function (req, res) {
       console.log('scheduling notifications');
       promise = scheduler.scheduleNotifications(req.campaign, req.application, true);
     }
-  } else if (req.body.expiresAt && moment().diff(req.body.expiresAt) > 0) {
+  } else if (req.body.expiresAt && moment().diff(req.body.expiresAt) > 0 && campaign.deliverySchedule) {
     // or if campaign is expired, cancel job
     console.log('job has expired. cancelling job');
     scheduler.cancelJob(campaign.deliverySchedule);

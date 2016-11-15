@@ -18,6 +18,10 @@ module.exports = function (app) {
     .put(applications.update)
     .delete(applications.delete);
 
+  // pem file upload
+  app.route('/api/applications/:applicationId/pem').all(applicationsPolicy.isAllowed)
+    .post(applications.uploadPem);
+
   // Finish by binding the application middleware
   app.param('applicationId', applications.applicationByID);
 };

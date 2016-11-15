@@ -45,6 +45,21 @@ var ApplicationSchema = new Schema({
     default: '',
     trim: true
   },
+  keyPem: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  certPem: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  passPhrase: {
+    type: String,
+    default: '',
+    trim: true
+  },
   image: {
     type: Schema.ObjectId,
     ref: 'Image'
