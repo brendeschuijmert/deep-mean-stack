@@ -7,6 +7,9 @@ var path = require('path'),
   mongoose = require('mongoose'),
   randomstring = require('randomstring'),
   _ = require('lodash'),
+  fs = require('fs'),
+  multer = require('multer'),
+  config = require(path.resolve('./config/config')),
   Application = mongoose.model('Application'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
@@ -94,6 +97,58 @@ exports.list = function (req, res) {
     }
   });
 };
+
+/**
+ * upload pem file for iOS PN
+ */
+exports.uploadPem = function(req, res) {
+  var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, config.uploads.dest);
+    },
+    filename: function(req, file, cb) {
+      cb(null, randomstring.generate(10) + '_' + file.originalname);
+    }
+  });
+  var upload = multer(_.extend(config.uploads, {
+    storage: storage
+  })).single('pemFile');
+
+  upload(req, res, function(uploadError) {
+    if(uploadError) {
+      return res.status(400).send({
+        message: 'Error occurred while uploading file'
+      });
+    } else {
+      fs.chmodSync(req.file.path, '0777');
+      // we are saving pem file into mongodb database as string.
+      fs.readFile(req.file.path, 'utf8', function(err, data) {
+        if (err) {
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        }
+
+        var fileName = req.query && req.query.fileName ? req.query.fileName : 'keyPem';
+        if (fileName === 'keyPem') {
+          req.application.passPhrase = (req.query && req.query.passPhrase) || '';
+        }
+        req.application[fileName] = data;
+        fs.unlinkSync(req.file.path);
+        req.application.save()
+        .then(function(application) {
+          res.json(application);
+        })
+        .catch(function(err) {
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        });
+      });
+    }
+  });
+};
+
 
 /**
  * Application middleware

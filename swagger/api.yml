@@ -598,6 +598,109 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}:
+    get:
+      summary: get an application detail
+      description: |
+        Get a application detail
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Applications
+      responses:
+        '200':
+          description: An object of application
+          schema:
+            $ref: '#/definitions/Application'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: delete an application
+      description: |
+        delete a campaign
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Applications
+      responses:
+        '200':
+          description: An object of application
+          schema:
+            $ref: '#/definitions/Application'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: update an application
+      description: |
+        Update an application
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for application
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Application'
+      tags:
+        - Applications
+      responses:
+        '200':
+          description: An object of application
+          schema:
+            $ref: '#/definitions/Application'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /applications/{applicationId}/pem:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      summary: uploads pem file
+      description: |
+        uploads pem file for iOS push notification
+        use keyPem or certPem as fileName
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: fileName
+          required: true
+          in: query
+          type: string
+        - name: passPhrase
+          required: false
+          in: query
+          type: string
+        - name: pemFile
+          required: true
+          in: formData
+          type: file
+      tags:
+        - Applications
+      responses:
+        '200':
+          description: An object of Application
+          schema:
+            $ref: '#/definitions/Application'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
   /applications/{applicationId}/segments:
     get:
       summary: list segments
