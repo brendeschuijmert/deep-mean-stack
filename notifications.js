@@ -48,6 +48,8 @@ var resqueJobs = {
         msgData.displayType = campaign.platform[platformIndex].displayType;
       }
 
+      msgData._id = notification._id;
+
       switch (notification.appUser.userDevice.devicePlatform) {
         case 'Android':
           {
