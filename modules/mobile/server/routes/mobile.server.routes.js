@@ -5,6 +5,7 @@
  */
 var auth = require('../controllers/authentication.server.controller'),
   appUserCtlr = require('../controllers/appUser.server.controller'),
+  notificationCtlr = require('../controllers/notifications.server.controller'),
   events = require('../controllers/events.server.controller');
 
 module.exports = function (app) {
@@ -21,6 +22,13 @@ module.exports = function (app) {
   app.route('/api/mobile/user/:appUserId/track_event')
     .post(auth.applicationByToken, events.track);
 
+  app.route('/api/mobile/user/:appUserId/unread_notifications')
+    .get(auth.applicationByToken, notificationCtlr.getUnreadNotifications);
+
+  app.route('/api/mobile/user/:appUserId/notifications/:notificationId/set_read')
+    .get(auth.applicationByToken, notificationCtlr.setNotificationRead);
+
   // Finish by binding the application middleware
   app.param('appUserId', appUserCtlr.appUserById);
+  app.param('notificationId', notificationCtlr.notificationById);
 };

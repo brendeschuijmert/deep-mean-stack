@@ -1297,6 +1297,60 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /mobile/user/{appUserId}/unread_notifications:
+    get:
+      summary: retrieve unread notifications
+      description: |
+        Retrieve unread notifications
+      tags:
+        - Mobile API
+      parameters:
+        - name: appUserId
+          required: true
+          in: path
+          type: string
+        - name: offset
+          required: false
+          in: query
+          type: number
+        - name: limit
+          required: false
+          in: query
+          type: number
+      responses:
+        '200':
+          description: An array of notifications
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PNotification'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /mobile/user/{appUserId}/notifications/{notificationId}/set_read:
+    get:
+      summary: mark notification read
+      description: |
+        mark notification read
+      tags:
+        - Mobile API
+      parameters:
+        - name: appUserId
+          required: true
+          in: path
+          type: string
+        - name: notificationId
+          required: true
+          in: path
+          type: string
+      responses:
+        '200':
+          description: updated notification
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
   Application:
     type: object
@@ -1561,6 +1615,43 @@ definitions:
         enum:
         - immediate
         - scheduled
+  Image:
+    type: object
+    properties:
+      type:
+        type: string
+        example: 'image/gif'
+      url:
+        type: string
+        example: http://www.example.com/example.gif
+      size:
+        type: number
+        example: 10000
+      duration:
+        type: number
+        example: 1000
+  PNotification:
+    type: object
+    properties:
+      animation:
+        $ref: '#/definitions/Image'
+      message:
+        type: string
+        example: sample notification message
+      messagePosition:
+        type: string
+        example: top
+      url:
+        type: string
+        example: https://www.google.com
+      campaignType:
+        type: string
+        example: url
+      displayType:
+        type: array
+        items:
+          type: string
+          example: nova
   Error:
     type: object
     properties:
