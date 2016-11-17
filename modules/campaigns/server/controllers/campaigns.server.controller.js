@@ -144,13 +144,18 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
   var campaign = req.campaign;
 
+  if (campaign.deliverySchedule) {
+    scheduler.cancelJob(campaign.deliverySchedule);
+    campaign.deliverySchedule.remove();
+  }
+
   campaign.remove(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.json(campaign);
+      res.json({ status: 'success' });
     }
   });
 };
