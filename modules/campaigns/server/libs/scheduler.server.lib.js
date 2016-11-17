@@ -65,7 +65,7 @@ function cancelJob(deliverySchedule) {
  * @param {Campaign} campaign
  * @returns {<Promise<CampaignSchedule>}
  */
-function checkSchedule(campaign) {
+function checkSchedule(application, campaign) {
   var deliverySchedule = campaign.deliverySchedule;
 
   if (!deliverySchedule) {
@@ -78,6 +78,9 @@ function checkSchedule(campaign) {
     cancelJob(deliverySchedule);
     deliverySchedule.jobId = '';
     return deliverySchedule.save();
+  } else {
+    // sending push notifications
+    pushNotificationsLib.send(application, campaign);
   }
 
   return Promise.resolve();
@@ -88,10 +91,10 @@ function checkSchedule(campaign) {
  * This function is called when campaign schedule is updated OR campaign is resumed/paused, activate/deactivated.
  * @function scheduleNotifications
  * @param {Campaign} campaign
- * @param {Application} applicatin
+ * @param {Application} application
  * @returns {Promise<CampaignSchedule>}
  */
-function scheduleNotifications(campaign, application, isReschedule) {
+function scheduleNotifications(campaign, application) {
   var deliverySchedule = campaign.deliverySchedule;
 
   if (!deliverySchedule) {
@@ -105,14 +108,13 @@ function scheduleNotifications(campaign, application, isReschedule) {
 
   var jobId = '';
   // schedules job
-  if (deliverySchedule.frequency === 'immediate' && !isReschedule) {
+  if (deliverySchedule.frequency === 'immediate') {
     console.log(chalk.green('setting up immediate push'));
     crontab.scheduleJob('* * * * *', pushNotificationsLib.send, [application, campaign], null, false);
   } else {
     // scheduled jobs
     console.log(getCrontabString(deliverySchedule));
-    jobId = crontab.scheduleJob(getCrontabString(deliverySchedule), pushNotificationsLib.send, [application, campaign]);
-    jobId = crontab.scheduleJob(getCrontabString(deliverySchedule), checkSchedule, [campaign]); // another scheuled job to check expired date
+    jobId = crontab.scheduleJob(getCrontabString(deliverySchedule), checkSchedule, [application, campaign]);
   }
 
   // saves jobId to cancel it later
