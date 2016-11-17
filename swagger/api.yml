@@ -1351,6 +1351,61 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /mobile/send_verification_code:
+    get:
+      summary: send verification code
+      description: |
+        send verification code to email or phone
+        verifyMethod can be either 'email' or 'phone'
+      tags:
+        - Mobile API
+      parameters:
+        - name: uuid
+          required: true
+          in: query
+          type: string
+        - name: verifyMethod
+          required: true
+          in: query
+          type: string
+        - name: email
+          required: false
+          in: query
+          type: string
+        - name: phone
+          required: false
+          in: query
+          type: string
+      responses:
+        '200':
+          description: success message
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /mobile/verify_code:
+    get:
+      summary: verify code
+      description: |
+        verify the code received on email or phone
+      tags:
+        - Mobile API
+      parameters:
+        - name: uuid
+          required: true
+          in: query
+          type: string
+        - name: verifyToken
+          required: true
+          in: query
+          type: string
+      responses:
+        '200':
+          description: success message
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
   Application:
     type: object
