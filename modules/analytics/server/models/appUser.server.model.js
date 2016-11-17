@@ -28,6 +28,22 @@ var AppUserSchema = new Schema({
   preferences: [{
     type: String
   }],
+  verified: {
+    type: Boolean,
+    default: false
+  },
+  verifyToken: {
+    type: String,
+    default: ''
+  },
+  verifyMethod: {
+    type: String,
+    default: 'phone'
+  },
+  verifyDevice: {
+    type: String,
+    default: ''
+  },
   userDevice: {
     type: Schema.ObjectId,
     ref: 'UserDevice'

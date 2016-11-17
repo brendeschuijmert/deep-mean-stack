@@ -31,5 +31,17 @@ module.exports = {
     bucket: 'dp-mean',
     accessKeyId: 'AKIAJ7MS2AC3YICO235Q',
     secretAccessKey: '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'
+  },
+  twilio: {
+    sID: 'AC28065995b21eb5356ef2225b8fe0625f',
+    token: 'a9cbf35a43dbad9d75d5233c0c742891',
+    from: '+13476583205'
+  },
+  email: {
+    service: 'Gmail',
+    user: 'cmodelsinc@gmail.com',
+    password: 'Appelago1!',
+    from: 'cmodelsinc@gmail.com',
+    port: 587
   }
 };

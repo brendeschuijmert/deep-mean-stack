@@ -28,6 +28,12 @@ module.exports = function (app) {
   app.route('/api/mobile/user/:appUserId/notifications/:notificationId/set_read')
     .get(auth.applicationByToken, notificationCtlr.setNotificationRead);
 
+  app.route('/api/mobile/send_verification_code')
+    .get(auth.getAppUserByUUID, auth.sendVerifyToken);
+
+  app.route('/api/mobile/verify_code')
+    .get(auth.getAppUserByUUID, auth.verifyToken);
+
   // Finish by binding the application middleware
   app.param('appUserId', appUserCtlr.appUserById);
   app.param('notificationId', notificationCtlr.notificationById);

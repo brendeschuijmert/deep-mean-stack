@@ -46,6 +46,11 @@ var UserDeviceSchema = new Schema({
     default: '',
     trim: true
   },
+  phone: {
+    type: String,
+    default: '',
+    trim: true
+  },
 
   // Location info
   location: {
