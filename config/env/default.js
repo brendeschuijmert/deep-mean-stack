@@ -27,7 +27,7 @@ module.exports = {
     host:      '127.0.0.1',
     port:      6379
   },
-  aws: {
+  aws: { // s3
     bucket: 'dp-mean',
     accessKeyId: 'AKIAJ7MS2AC3YICO235Q',
     secretAccessKey: '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'
@@ -38,10 +38,6 @@ module.exports = {
     from: '+13476583205'
   },
   email: {
-    service: 'Gmail',
-    user: 'cmodelsinc@gmail.com',
-    password: 'Appelago1!',
-    from: 'cmodelsinc@gmail.com',
-    port: 587
+    from: 'no-reply@dynamicpush.com'
   }
 };

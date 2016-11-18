@@ -1,16 +1,14 @@
 'use strict';
 
 var nodemailer = require('nodemailer');
+var ses = require('nodemailer-ses-transport');
 var config = require('../config');
 var Promise = require('bluebird');
 
-var transporter = nodemailer.createTransport({
-  service: config.email.service,
-  auth: {
-    user: config.email.user,
-    pass: config.email.password
-  }
-});
+var transporter = nodemailer.createTransport(ses({
+  accessKeyId: config.aws.accessKeyId,
+  secretAccessKey: config.aws.secretAccessKey
+}));
 
 exports.sendMail = function(params) { // to, subject, text
   params.from = params.from || config.email.from;
