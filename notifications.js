@@ -60,12 +60,7 @@ var resqueJobs = {
               // contentAvailable: true,
               // delayWhileIdle: true,
               // timeToLive: 3,
-              data: msgData,
-              notification: {
-                title: 'dyamic push',
-                body: 'notification from dynamic push',
-                icon: 'ic_launcher'
-              }
+              data: msgData
             };
             console.log('sending Android', JSON.stringify(androidMessage));
             if (!campaign.application.fcmServerKey) {
