@@ -9,8 +9,6 @@ var path = require('path'),
   config = require(path.resolve('./config/config')),
   gifyParse = require('gify-parse'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
-//
-// mongoose.Promise = require('bluebird');
 
 exports.uploadToAWS = function(imgObj, cb, staticImg) {
   var buffer = fs.readFileSync(imgObj.path);
