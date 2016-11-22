@@ -8,32 +8,30 @@ var mongoose = require('mongoose'),
 
 mongoose.Promise = Promise;
 
-exports.getAppUsersBySegment = function(application, segment) {
+exports.getAppUsersBySegment = function(application, segmentId, offset, limit) {
+  offset = offset*1 || 0;
+
   return new Promise(function(resolve, reject){
-    if (!segment) {
-      AppUser.find({ application: application }).populate('userDevice').exec(function(err, appUsers){
-        if (err) {
-          reject(err);
-        } else {
-          resolve(appUsers);
-        }
-      });
-    } else {
-      Segment.findById(segment).populate('filter').then(function(result) {
-        var filter = JSON.parse(result.filter.body);
-        return AppUser.find({ application: application }).populate({
-          path: 'userDevice',
-          match: filter
-        }).exec(function(err, appUsers) {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(appUsers);
-          }
-        });
-      }).catch(function(err) {
-        reject(err);
-      });
+    var promise = Promise.resolve();
+    if (segmentId) {
+      promise = Segment.findById(segmentId).populate('filter').exec();
     }
+
+    promise.then(function(segment) {
+      var match = segment ? JSON.parse(segment.filter.body) : {};
+      var query = AppUser.find({ application: application._id }).populate({
+        path: 'userDevice',
+        match: match
+      }).skip(offset);
+      if (limit) {
+        query = query.limit(limit * 1);
+      }
+
+      return query.exec();
+    }).then(function(appUsers) {
+      resolve(appUsers);
+    }).catch(function(err) {
+      reject(err);
+    });
   });
 };
