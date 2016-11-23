@@ -138,6 +138,10 @@ var UserDeviceSchema = new Schema({
   pushNotificationEnabled: {
     type: Boolean,
     default: true
+  },
+  uninstalled: {
+    type: Boolean,
+    default: false
   }
 });
 

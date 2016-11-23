@@ -14,10 +14,10 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
- * getDevicesByPlatform
+ * getAudiences
  */
 exports.getAudiences = function(req, res) {
-  appUserLib.getAppUsersBySegment(req.application, req.query.segment, req.query.offset, req.query.limit)
+  appUserLib.getAppUsersBySegment(req.application, req.query.segmentId, req.query.offset, req.query.limit || 20)
   .then(function(result) {
     res.json(_.map(result, function(u) {
       return _.omit(u.toObject(), 'verifyDevice', 'verifyMethod', 'verifyToken'); // remove sensitive information
@@ -30,3 +30,5 @@ exports.getAudiences = function(req, res) {
     });
   });
 };
+
+// @TODO generate CSV and make it available in report section
