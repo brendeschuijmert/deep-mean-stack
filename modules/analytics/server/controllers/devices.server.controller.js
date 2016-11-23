@@ -14,7 +14,6 @@ var path = require('path'),
 /**
  * getDevicesByPlatform
  */
-// @TODO $group by event.optin/optout/uninstall
 exports.getDevicesByPlatform = function(req, res) {
   AppUser.find({
     application: req.application._id
@@ -30,8 +29,24 @@ exports.getDevicesByPlatform = function(req, res) {
         }
       }, {
         $group: {
-          _id: '$devicePlatform',
-          count: { $sum: 1 }
+          _id: {
+            devicePlatform: '$devicePlatform',
+            optIn: '$pushNotificationEnabled',
+            uninstalled: '$uninstalled'
+          },
+          deviceCount: { $sum: 1 }
+        }
+      }, {
+        $group: {
+          _id: '$_id.devicePlatform',
+          devices: {
+            $push: {
+              optIn: '$_id.optIn',
+              uninstalled: '$_id.uninstalled',
+              count: '$deviceCount'
+            }
+          },
+          total: { $sum: '$deviceCount' }
         }
       }
     ]).exec();

@@ -1193,6 +1193,56 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}/analytics/devicesByPlatform:
+    get:
+      summary: retrieve device analytics
+      description: |
+        retrieve device analytics grouped by optIn, uninstall status
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Analytics
+      responses:
+        '200':
+          description: Array of aggregation grouped by platform
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /applications/{applicationId}/analytics/getAudiences:
+    get:
+      summary: retrieve audience analytics
+      description: |
+        retrieve audience analytics by segment
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: segmentId
+          required: false
+          in: query
+          type: string
+        - name: offset
+          required: false
+          in: query
+          type: number
+        - name: limit
+          required: false
+          in: query
+          type: number
+      tags:
+        - Analytics
+      responses:
+        '200':
+          description: Array of audiences
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
 
   /mobile/authenticate:
     post:
@@ -1539,6 +1589,8 @@ definitions:
       appVersion:
         type: string
       pushNotificationEnabled:
+        type: boolean
+      uninstalled:
         type: boolean
   AnalyticEvent:
     type: object

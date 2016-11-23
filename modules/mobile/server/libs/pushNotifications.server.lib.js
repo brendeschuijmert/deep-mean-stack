@@ -20,6 +20,9 @@ exports.send = function(application, campaign) {
   return appUserLib.getAppUsersBySegment(application, campaign.segment)
   .then(function(appUsers){
     _.each(appUsers, function(user) {
+      // do not create notification if pushNotificationEnabled = false
+      if (!user.userDevice.pushNotificationEnabled) return;
+
       var notification = new PNotification();
       notification.campaign = campaign;
       notification.appUser = user;
