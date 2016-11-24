@@ -17,4 +17,6 @@ module.exports = function (app) {
     .get(segments.read)
     .put(segments.update)
     .delete(segments.delete);
+
+  app.param('segmentId', segments.segmentByID);
 };

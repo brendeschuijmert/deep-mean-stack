@@ -13,8 +13,10 @@ module.exports = function (app) {
     .post(filters.create);
 
   // Single segment routes
-  app.route('/api/applications/:applicationId/filters/:segmentId').all(filtersPolicy.isAllowed)
+  app.route('/api/applications/:applicationId/filters/:filterId').all(filtersPolicy.isAllowed)
     .get(filters.read)
     .put(filters.update)
     .delete(filters.delete);
+
+  app.param('filterId', filters.filterByID);
 };
