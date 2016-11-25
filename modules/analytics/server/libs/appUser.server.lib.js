@@ -19,7 +19,7 @@ exports.getAppUsersBySegment = function(application, segmentId, offset, limit) {
 
     promise.then(function(segment) {
       var match = segment ? JSON.parse(segment.filter.body) : {};
-      var query = AppUser.find({ application: application._id }).populate({
+      var query = AppUser.find({ application: application._id, userDevice: { $exists: true } }).populate({
         path: 'userDevice',
         match: match
       }).skip(offset);
