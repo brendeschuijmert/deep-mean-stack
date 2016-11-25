@@ -25,7 +25,7 @@ exports.getAppUsersBySegment = function(application, segmentId, offset, limit) {
       });
     }).then(function(appUsers) {
       // now filter app users
-      appUsers = _.filter(appUsers, function(u) { return u.userDevice !== null; });
+      appUsers = _.filter(appUsers, function(u) { return u.userDevice; });
       limit = limit * 1 || 10;
       appUsers = appUsers.slice(offset, offset + limit);
       resolve(appUsers);
