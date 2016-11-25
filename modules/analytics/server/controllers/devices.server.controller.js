@@ -16,7 +16,8 @@ var path = require('path'),
  */
 exports.getDevicesByPlatform = function(req, res) {
   AppUser.find({
-    application: req.application._id
+    application: req.application._id,
+    userDevice: { $exists: true }
   }).select(
     'userDevice'
   ).exec()
