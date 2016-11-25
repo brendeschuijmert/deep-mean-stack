@@ -1243,6 +1243,37 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}/analytics/getAudienceCounts:
+    post:
+      summary: retrieve audience count list by segment
+      description: |
+        retrieve audience count list by segment
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              segmentIds:
+                type: array
+                items:
+                  type: string
+                description: segment ids
+      tags:
+        - Analytics
+      responses:
+        '200':
+          description: Array of audience counts
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
 
   /mobile/authenticate:
     post:

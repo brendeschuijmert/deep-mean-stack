@@ -31,4 +31,41 @@ exports.getAudiences = function(req, res) {
   });
 };
 
-// @TODO generate CSV and make it available in report section
+exports.getAudienceCounts = function(req, res) {
+  var deviceIds = [];
+  AppUser.find({ application: req.application._id }).select('userDevice')
+  .then(function(userDevices) {
+    deviceIds = _.map(userDevices, function(d) { return d.userDevice; });
+    return Segment.find({ _id: { $in: req.body.segmentIds } }).populate('filter');
+  })
+  .then(function(segments) {
+    var promises = _.map(segments, function(segment) {
+      var match = segment ? JSON.parse(segment.filter.body) : {};
+      return UserDevice.aggregate([
+        {
+          $match: _.extend({
+            _id: { $in: deviceIds }
+          }, match)
+        }, {
+          $group: {
+            _id: segment._id,
+            count: { $sum: 1 }
+          }
+        }
+      ]).exec();
+    });
+    return Promise.all(promises);
+  })
+  .then(function(result) {
+    var resp = {};
+    _.each(result, function(agg) {
+      resp[agg[0]._id] = agg[0].count;
+    });
+    res.json(resp);
+  })
+  .catch(function(err) {
+    res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
+  });
+};

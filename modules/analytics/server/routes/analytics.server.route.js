@@ -14,4 +14,7 @@ module.exports = function (app) {
 
   app.route('/api/applications/:applicationId/analytics/getAudiences')
     .get(appUsers.getAudiences);
+
+  app.route('/api/applications/:applicationId/analytics/getAudienceCounts')
+    .post(appUsers.getAudienceCounts);
 };
