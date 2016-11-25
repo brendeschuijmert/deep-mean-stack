@@ -33,7 +33,7 @@ exports.getAudiences = function(req, res) {
 
 exports.getAudienceCounts = function(req, res) {
   var deviceIds = [];
-  AppUser.find({ application: req.application._id, userDevice: { $exists: true, $ne: null } }).select('userDevice')
+  AppUser.find({ application: req.application._id, userDevice: { $exists: true } }).select('userDevice')
   .then(function(userDevices) {
     deviceIds = _.map(userDevices, function(d) { return d.userDevice; });
     return Segment.find({ _id: { $in: req.body.segmentIds } }).populate('filter');
