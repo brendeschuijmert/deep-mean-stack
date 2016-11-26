@@ -39,8 +39,12 @@ exports.getAudienceCounts = function(req, res) {
     return Segment.find({ _id: { $in: req.body.segmentIds } }).populate('filter');
   })
   .then(function(segments) {
+    if (!segments.length) {
+      segments = [{ _id: 'all' }];
+    }
+
     var promises = _.map(segments, function(segment) {
-      var match = segment ? JSON.parse(segment.filter.body) : {};
+      var match = segment.filter ? JSON.parse(segment.filter.body) : {};
       return UserDevice.aggregate([
         {
           $match: _.extend({
