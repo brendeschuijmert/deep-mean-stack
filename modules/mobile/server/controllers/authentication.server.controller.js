@@ -64,7 +64,7 @@ exports.authenticate = function (req, res) {
     }
 
     var appJson = _.pick(currentApplication, 'senderId', 'packageName');
-    var token = jwt.sign(currentApplication, config.mobileSessionSecret, {
+    var token = jwt.sign(currentApplication.toObject(), config.mobileSessionSecret, {
       expiresIn: config.mobileTokenExpire * 60
     });
     res.json({
