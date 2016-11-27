@@ -84,7 +84,7 @@ var resqueJobs = {
         case 'iOS':
           {
             var keyPem = campaign.application.keyPem;
-            var certPem = camapign.application.certPem;
+            var certPem = campaign.application.certPem;
             if (!keyPem || !certPem) {
               throw new Error('Key Pem or Cert Pem not found!')
             }
