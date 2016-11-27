@@ -18,19 +18,19 @@ exports.invokeRolesPolicies = function () {
   acl.allow([{
     roles: ['admin'],
     allows: [{
-      resources: '/api/applications/:applicationId/filters',
+      resources: '/api/applications/:applicationId/customEvents',
       permissions: '*'
     }, {
-      resources: '/api/applications/:applicationId/filters/:filterId',
+      resources: '/api/applications/:applicationId/customEvents/:customeEventId',
       permissions: '*'
     }]
   }, {
     roles: ['user'],
     allows: [{
-      resources: '/api/applications/:applicationId/filters',
+      resources: '/api/applications/:applicationId/customEvents',
       permissions: '*'
     }, {
-      resources: '/api/applications/:applicationId/filters/:filterId',
+      resources: '/api/applications/:applicationId/customEvents/:customeEventId',
       permissions: '*'
     }]
   }]);

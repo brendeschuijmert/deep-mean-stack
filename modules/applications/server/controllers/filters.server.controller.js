@@ -82,8 +82,7 @@ exports.delete = function (req, res) {
  * List of Filters
  */
 exports.list = function (req, res) {
-  //TODO: support for UAC
-  Filter.find().sort('-created').exec(function (err, filters) {
+  Filter.find({}).sort('-created').exec(function (err, filters) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)

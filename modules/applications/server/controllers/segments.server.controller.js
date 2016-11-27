@@ -16,7 +16,7 @@ var path = require('path'),
 exports.create = function (req, res) {
   var segmentJSON = _.pick(req.body, 'name', 'filter');
   var segment = new Segment(segmentJSON);
-  segment.application = segment.application;
+  segment.application = req.application._id;
 
   segment.save(function (err) {
     if (err) {
@@ -79,8 +79,7 @@ exports.delete = function (req, res) {
  * List of Segments
  */
 exports.list = function (req, res) {
-  //TODO: support for UAC
-  Segment.find().sort('-created').exec(function (err, segments) {
+  Segment.find({ application: req.application._id }).sort('-created').exec(function (err, segments) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)

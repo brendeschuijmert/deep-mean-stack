@@ -59,7 +59,7 @@ exports.isAllowed = function (req, res, next) {
     } else {
       if (isAllowed) {
         // Access to the endpoint is granted! Check resource access now.
-        return appAccessLib.getAppAccess(req.application, 'segments', req.user)
+        return appAccessLib.getAppAccess(req.application, 'analytics', req.user)
         .then(function(allowed){
           if (allowed) {
             return next();
