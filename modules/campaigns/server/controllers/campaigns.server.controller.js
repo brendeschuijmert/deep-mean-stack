@@ -164,11 +164,10 @@ exports.delete = function (req, res) {
  * List of Campaigns
  */
 exports.list = function (req, res) {
-  Campaign.find().populate({
-    path: 'application',
-    match: {
-      _id: req.application._id
-    }
+  Campaign.find({
+    application: req.application._id
+  }).populate({
+    path: 'application'
   }).sort('-created').exec(function (err, campaigns) {
     if (err) {
       return res.status(400).send({

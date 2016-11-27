@@ -745,7 +745,8 @@ paths:
                 description: name of the segment
                 example: Age Group
               filter:
-                $ref: '#/definitions/Filter'
+                type: string
+                description: Ref ID of filter
       tags:
         - Segments
       responses:
@@ -957,6 +958,143 @@ paths:
           in: body
           schema:
             $ref: '#/definitions/Filter'
+      tags:
+        - Filters
+      responses:
+        '200':
+          description: An object of filter
+          schema:
+            $ref: '#/definitions/Filter'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /applications/{applicationId}/customEvents:
+    get:
+      summary: list custom events
+      description: |
+        Returns list of custom events inside application
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Custom Events
+      responses:
+        '200':
+          description: An array of custom events
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CustomEvent'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: create custom event
+      description: |
+        Creates a custom event with basic properties
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for custom event
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              eventTarget:
+                type: string
+              eventType:
+                type: string
+              eventValue:
+                type: string
+      tags:
+        - Custom Events
+      responses:
+        '200':
+          description: An object of custom event
+          schema:
+            $ref: '#/definitions/CustomEvent'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /applications/{applicationId}/customEvents/{customEventId}:
+    get:
+      summary: get a custom event detail
+      description: |
+        Get a custom event detail
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: customEventId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Custom Events
+      responses:
+        '200':
+          description: An object of custom event
+          schema:
+            $ref: '#/definitions/CustomEvent'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: delete a custom event
+      description: |
+        delete a custom event
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: customEventId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Filters
+      responses:
+        '200':
+          description: An object of custom event
+          schema:
+            $ref: '#/definitions/CustomEvent'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: update custom event
+      description: |
+        Update a custom event
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: customEventId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object for custom event
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/CustomEvent'
       tags:
         - Filters
       responses:
@@ -1768,6 +1906,21 @@ definitions:
       duration:
         type: number
         example: 1000
+  CustomEvent:
+    type: object
+    properties:
+      name:
+        type: string
+        example: notification receive
+      eventType:
+        type: string
+        example: receive
+      eventTarget:
+        type: string
+        example: notification
+      eventValue:
+        type: string
+        example: ""
   PNotification:
     type: object
     properties:
