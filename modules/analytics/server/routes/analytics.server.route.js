@@ -5,6 +5,7 @@
  */
 var devices = require('../controllers/devices.server.controller');
 var appUsers = require('../controllers/appUsers.server.controller');
+var events = require('../controllers/events.server.controller');
 
 // @TODO authorize routes
 
@@ -17,4 +18,7 @@ module.exports = function (app) {
 
   app.route('/api/applications/:applicationId/analytics/getAudienceCounts')
     .post(appUsers.getAudienceCounts);
+
+  app.route('/api/applications/:applicationId/analytics/events')
+    .get(events.getEventsAnalyticsBySegment);
 };
