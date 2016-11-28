@@ -1412,6 +1412,46 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}/analytics/events:
+    get:
+      summary: retrieve event analytics
+      description: |
+        retrieve event analytics by segment and custom event
+        groupby can be day, month, year
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: segmentId
+          required: false
+          in: query
+          type: string
+        - name: eventId
+          required: false
+          in: query
+          type: string
+        - name: groupBy
+          required: false
+          in: query
+          type: string
+        - name: startDate
+          required: false
+          in: query
+          type: string
+        - name: endDate
+          required: false
+          in: query
+          type: string
+      tags:
+        - Analytics
+      responses:
+        '200':
+          description: Array of event counts grouped
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
 
   /mobile/authenticate:
     post:
