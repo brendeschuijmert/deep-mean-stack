@@ -66,7 +66,8 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
     }, filter);
     return UserDevice.find(deviceConditions).select('_id');
   })
-  .then(function(deviceIds) {
+  .then(function(devices) {
+    var deviceIds = _.map(devices, '_id');
     var eventFilter = {
       eventTarget: customEvent.eventTarget || '',
       eventType: customEvent.eventType || '',
