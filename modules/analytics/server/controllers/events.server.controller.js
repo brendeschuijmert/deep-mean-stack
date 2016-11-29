@@ -77,6 +77,10 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
       }
     };
 
+    if (!eventFilter.eventTarget) delete eventFilter.eventTarget;
+    if (!eventFilter.eventType) delete eventFilter.eventType;
+    if (!eventFilter.eventValue) delete eventFilter.eventValue;
+
     return AnalyticEvent.aggregate({
       $match: eventFilter
     }, {
