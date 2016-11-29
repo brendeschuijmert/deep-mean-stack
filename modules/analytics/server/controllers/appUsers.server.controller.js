@@ -17,7 +17,7 @@ var path = require('path'),
  * getAudiences
  */
 exports.getAudiences = function(req, res) {
-  appUserLib.getAppUsersBySegment(req.application, req.query.segmentId, req.query.offset, req.query.limit || 20)
+  appUserLib.getAppUsersBySegment(req.application, req.query.segmentId, req.query.offset, req.query.limit || 10)
   .then(function(result) {
     res.json(_.map(result, function(u) {
       return _.omit(u.toObject(), 'verifyDevice', 'verifyMethod', 'verifyToken'); // remove sensitive information
