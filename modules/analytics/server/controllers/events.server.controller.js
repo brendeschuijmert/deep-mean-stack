@@ -64,7 +64,6 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
     var deviceConditions = _.extend({
       appUser: { $in: userIds }
     }, filter);
-    console.log(deviceConditions);
     return UserDevice.find(deviceConditions).select('_id');
   })
   .then(function(deviceIds) {
@@ -75,7 +74,8 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
       created: {
         $gte: moment(startDate).toDate(),
         $lte: moment(endDate).toDate()
-      }
+      },
+      userDevice: { $in: deviceIds }
     };
 
     if (!eventFilter.eventTarget) delete eventFilter.eventTarget;
