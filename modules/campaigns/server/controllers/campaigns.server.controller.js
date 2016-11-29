@@ -166,9 +166,11 @@ exports.delete = function (req, res) {
 exports.list = function (req, res) {
   Campaign.find({
     application: req.application._id
-  }).populate({
+  }).populate([{
     path: 'application'
-  }).sort('-created').exec(function (err, campaigns) {
+  }, {
+    path: 'animation'
+  }]).sort('-created').exec(function (err, campaigns) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
