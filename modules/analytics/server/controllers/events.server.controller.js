@@ -32,7 +32,7 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
       count: { $sum: 1 }
     },
     year: {
-      _id: { day: { $day: '$created' } },
+      _id: { year: { $year: '$created' } },
       count: { $sum: 1 }
     }
   };
@@ -64,6 +64,7 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
     var deviceConditions = _.extend({
       appUser: { $in: userIds }
     }, filter);
+    console.log(deviceConditions);
     return UserDevice.find(deviceConditions).select('_id');
   })
   .then(function(deviceIds) {
