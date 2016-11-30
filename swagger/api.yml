@@ -38,6 +38,88 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /auth/signup:
+    post:
+      summary: user sign up
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                example: admin@dynamicpush.com
+              password:
+                type: string
+                example: abcd1234
+              firstName:
+                type: string
+                example: John
+              lastName:
+                type: string
+                example: smith
+              company:
+                type: string
+                example: Google
+              phone:
+                type: string
+              address:
+                type: string
+                example: Mock street 101, New York, NY, 11001
+      description: company sign up
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Succesful Response
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /auth/sendConfirmEmail:
+    get:
+      summary: resend confirm account email
+      description: |
+        resend confirm account email
+      parameters:
+        - name: email
+          type: string
+          in: query
+          required: true
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Success response
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /auth/verifyAccount:
+    get:
+      summary: verify account
+      description: |
+        verify account
+      parameters:
+        - name: email
+          in: query
+          type: string
+          required: true
+        - name: confirmToken
+          in: query
+          type: string
+          required: true
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Success response
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /profile:
     get:
       summary: get profile details

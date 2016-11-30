@@ -8,7 +8,10 @@ var path = require('path'),
   mongoose = require('mongoose'),
   passport = require('passport'),
   jwt = require('jsonwebtoken'),
+  randomstring = require('randomstring'),
   _ = require('lodash'),
+  moment = require('moment'),
+  mailer = require(path.resolve('./config/lib/mailer')),
   config = require(path.resolve('./config/config')),
   User = mongoose.model('User');
 
@@ -18,39 +21,117 @@ var noReturnUrls = [
   '/authentication/signup'
 ];
 
+function sendConfirmEmail(req, res, user) {
+  var httpTransport = 'http://';
+  if (config.secure && config.secure.ssl === true) {
+    httpTransport = 'https://';
+  }
+  user.confirmToken = randomstring.generate({ length: 20 });
+  user.confirmTokenExpires = moment().add(1, 'hour').toDate();
+  return user.save().then(function() {
+    return new Promise(function(resolve, reject) {
+      res.render(path.resolve('modules/users/server/templates/verify-email'), {
+        name: user.firstName + ' ' + user.lastName,
+        appName: config.app.title,
+        url: httpTransport + req.headers.host + '/confirm_email/' + user.confirmToken
+      }, function (err, emailHTML) {
+        if (err) {
+          reject(err);
+        } else {
+          mailer.sendMail({
+            to: user.email,
+            subject: 'Verify your email address at ' + config.app.title,
+            html: emailHTML
+          }).then(function(result) {
+            resolve(result);
+          }).catch(function(err2) {
+            reject(err2);
+          });
+        }
+      });
+    });
+  });
+}
+
+exports.sendConfirmEmail = function(req, res) {
+  var user;
+  User.findOne({ email: req.query.email })
+  .then(function(userObj) {
+    user = userObj;
+    if (!userObj) {
+      throw new Error('User not found');
+    } else if (userObj.active) {
+      throw new Error('Your account is already activated');
+    } else {
+      return sendConfirmEmail(req, res, userObj);
+    }
+  })
+  .then(function() {
+    res.send({
+      status: 'SUCCESS',
+      message: 'Verification email sent to ' + user.email
+    });
+  })
+  .catch(function(err) {
+    res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
+  });
+};
+
+exports.verifyAccount = function(req, res) {
+  User.findOne({ email: req.query.email, confirmToken: req.query.confirmToken })
+  .then(function(user) {
+    if (!user) {
+      throw new Error('Account not found');
+    } else if (moment().diff(user.confirmTokenExpires) > 0) {
+      throw new Error('Confirm Token Expired');
+    } else {
+      user.active = true;
+      user.confirmToken = '';
+      return user.save();
+    }
+  })
+  .then(function() {
+    res.send({ status: 'Your account is activated' });
+  })
+  .catch(function(err) {
+    res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
+  });
+};
+
 /**
  * Signup
  */
 exports.signup = function (req, res) {
   // For security measurement we remove the roles from the req.body object
-  delete req.body.roles;
+  delete req.body.role;
+  delete req.body.active;
 
   // Init Variables
   var user = new User(req.body);
-  var message = null;
 
   // Add missing user fields
   user.provider = 'local';
+  user.role = 'admin';
 
-  // Then save the user
-  user.save(function (err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      // Remove sensitive data before login
-      user.password = undefined;
-      user.salt = undefined;
-
-      req.login(user, function (err) {
-        if (err) {
-          res.status(400).send(err);
-        } else {
-          res.json(user);
-        }
-      });
-    }
+  user.save()
+  .then(function(newUser) {
+    return sendConfirmEmail(req, res, newUser);
+  })
+  .then(function() {
+    res.send({
+      status: 'SUCCESS',
+      message: 'Verification email sent to ' + user.email
+    });
+  })
+  .catch(function(err){
+    console.log(err);
+    res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
   });
 };
 
@@ -62,21 +143,24 @@ exports.signin = function (req, res, next) {
     if (err || !user) {
       res.status(400).send(info);
     } else {
-      // Remove sensitive data before login
-      user.password = undefined;
-      user.salt = undefined;
 
-      req.login(user, function (err) {
-        if (err) {
-          res.status(400).send(err);
-        } else {
-          var token = jwt.sign(user.toJSON(), config.apiSecret, {
-            expiresIn: config.apiTokenExpire * 60
-          });
-          var jsonData = _.extend(user.toJSON(), { token: token });
-          res.json(jsonData);
-        }
-      });
+      if (!user.active) {
+        res.status(403).send({ message: 'Account is not activated' });
+      } else {
+        var userJSON = _.pick(user.toJSON(), '_id', 'firstName', 'lastName', 'email', 'profileImageURL', 'company', 'role');
+
+        req.login(user, function (err) {
+          if (err) {
+            res.status(400).send(err);
+          } else {
+            var token = jwt.sign(userJSON, config.apiSecret, {
+              expiresIn: config.apiTokenExpire * 60
+            });
+            var jsonData = _.extend(userJSON, { token: token });
+            res.json(jsonData);
+          }
+        });
+      }
     }
   })(req, res, next);
 };
