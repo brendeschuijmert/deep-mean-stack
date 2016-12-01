@@ -27,8 +27,7 @@ var SegmentSchema = new Schema({
     ref: 'Application'
   },
   filter: {
-    type: Schema.ObjectId,
-    ref: 'Filter'
+    type: String
   }
 });
 

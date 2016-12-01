@@ -827,8 +827,7 @@ paths:
                 description: name of the segment
                 example: Age Group
               filter:
-                type: string
-                description: Ref ID of filter
+                type: object
       tags:
         - Segments
       responses:
@@ -1904,7 +1903,7 @@ definitions:
         type: string
         example: Age Group
       filter:
-        $ref: '#/definitions/Filter'
+        type: object
       application:
         $ref: '#/definitions/Application'
   Filter:
