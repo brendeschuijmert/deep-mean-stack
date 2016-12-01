@@ -14,11 +14,11 @@ exports.getAppUsersBySegment = function(application, segmentId, offset, limit) {
   return new Promise(function(resolve, reject){
     var promise = Promise.resolve();
     if (segmentId) {
-      promise = Segment.findById(segmentId).populate('filter').exec();
+      promise = Segment.findById(segmentId).exec();
     }
 
     promise.then(function(segment) {
-      var match = segment ? JSON.parse(segment.filter.body) : {};
+      var match = segment ? JSON.parse(segment.filter) : {};
       return AppUser.find({ application: application._id }).populate({
         path: 'userDevice',
         match: match

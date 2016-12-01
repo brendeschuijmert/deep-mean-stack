@@ -37,9 +37,9 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
     }
   };
 
-  var segmentPromise = Promise.resolve({ _id: 'all', filter: { body: '{}' } });
+  var segmentPromise = Promise.resolve({ _id: 'all', filter: '{}' });
   if (segmentId) {
-    segmentPromise = Segment.findById(segmentId).populate('filter').exec();
+    segmentPromise = Segment.findById(segmentId).exec();
   }
 
   var eventPromise = Promise.resolve({ eventTarget: '', eventType: '', eventValue: '' });
@@ -59,7 +59,7 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
     customEvent = result[1];
     userIds = _.map(result[2], '_id');
 
-    var filter = segment.filter && segment.filter.body ? JSON.parse(segment.filter.body) : {};
+    var filter = segment && segment.filter ? JSON.parse(segment.filter) : {};
 
     var deviceConditions = _.extend({
       appUser: { $in: userIds }
