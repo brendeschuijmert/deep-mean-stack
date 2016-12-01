@@ -73,3 +73,31 @@ exports.getAudienceCounts = function(req, res) {
     });
   });
 };
+
+exports.getAudienceCountByFilter = function(req, res) {
+  var deviceIds = [];
+  AppUser.find({ application: req.application._id, userDevice: { $exists: true } }).select('userDevice')
+  .then(function(userDevices) {
+    deviceIds = _.map(userDevices, function(d) { return d.userDevice; });
+    return UserDevice.aggregate([
+      {
+        $match: _.extend({
+          _id: { $in: deviceIds }
+        }, req.body.filter)
+      }, {
+        $group: {
+          _id: 'filtered',
+          count: { $sum: 1 }
+        }
+      }
+    ]).exec();
+  })
+  .then(function(result) {
+    res.json(result.length ? { count: result[0].count } : { count: 0 });
+  })
+  .catch(function(err) {
+    res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
+  });
+};
