@@ -1493,6 +1493,35 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}/analytics/getAudienceCountByFilter:
+    post:
+      summary: retrieve audience count by filter
+      description: |
+        retrieve audience count by filter
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: body
+          description: json object
+          required: true
+          in: body
+          schema:
+            type: object
+            properties:
+              filter:
+                type: object
+                description: filter object
+      tags:
+        - Analytics
+      responses:
+        '200':
+          description: Array of audience counts
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
   /applications/{applicationId}/analytics/events:
     get:
       summary: retrieve event analytics

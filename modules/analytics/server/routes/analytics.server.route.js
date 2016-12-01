@@ -19,6 +19,9 @@ module.exports = function (app) {
   app.route('/api/applications/:applicationId/analytics/getAudienceCounts')
     .post(appUsers.getAudienceCounts);
 
+  app.route('/api/applications/:applicationId/analytics/getAudienceCountByFilter')
+    .post(appUsers.getAudienceCountByFilter);
+
   app.route('/api/applications/:applicationId/analytics/events')
     .get(events.getEventsAnalyticsBySegment);
 };
