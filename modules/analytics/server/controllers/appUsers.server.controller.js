@@ -47,9 +47,12 @@ exports.getAudienceCounts = function(req, res) {
       var match = segment.filter ? JSON.parse(segment.filter) : {};
       return UserDevice.aggregate([
         {
-          $match: _.extend({
-            _id: { $in: deviceIds }
-          }, match)
+          $match:{
+            $and: [
+              { _id: { $in: deviceIds } },
+              req.body.filter
+            ]
+          },
         }, {
           $group: {
             _id: segment._id,
@@ -81,9 +84,12 @@ exports.getAudienceCountByFilter = function(req, res) {
     deviceIds = _.map(userDevices, function(d) { return d.userDevice; });
     return UserDevice.aggregate([
       {
-        $match: _.extend({
-          _id: { $in: deviceIds }
-        }, req.body.filter)
+        $match:{
+          $and: [
+            { _id: { $in: deviceIds } },
+            req.body.filter
+          ]
+        },
       }, {
         $group: {
           _id: 'filtered',
