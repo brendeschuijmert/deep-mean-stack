@@ -61,9 +61,12 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
 
     var filter = segment && segment.filter ? JSON.parse(segment.filter) : {};
 
-    var deviceConditions = _.extend({
-      appUser: { $in: userIds }
-    }, filter);
+    var deviceConditions = {
+      $and: [
+        { appUser: { $in: userIds } },
+        filter
+      ]
+    };
     return UserDevice.find(deviceConditions).select('_id');
   })
   .then(function(devices) {
