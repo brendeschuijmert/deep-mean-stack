@@ -43,14 +43,14 @@ exports.read = function (req, res) {
 exports.update = function (req, res) {
   var segment = req.segment;
 
+  if (req.body.filter && _.isObject(req.body.filter)) {
+    segment.filter = JSON.stringify(req.body.filter);
+  }
+
   segment = _.extend(
     segment,
-    _.pick(req.body, 'name', 'filter', 'favorite')
+    _.pick(req.body, 'name', 'favorite')
   );
-
-  if (_.isObject(segment.filter)) {
-    segment.filter = JSON.stringify(segment.filter);
-  }
 
   segment.save(function (err) {
     if (err) {
