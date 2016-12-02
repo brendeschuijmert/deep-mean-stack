@@ -26,6 +26,10 @@ var SegmentSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Application'
   },
+  favorite: {
+    type: Boolean,
+    default: false
+  },
   filter: {
     type: String
   }
