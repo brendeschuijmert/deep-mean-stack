@@ -93,7 +93,7 @@ exports.getAudienceCountByFilter = function(req, res) {
     ]).exec();
   })
   .then(function(result) {
-    res.json(result.length ? { count: result[0].count } : { count: 0 });
+    res.json(result.length ? { count: result[0].count, total: deviceIds.length } : { count: 0, total: deviceIds.length });
   })
   .catch(function(err) {
     res.status(400).send({
