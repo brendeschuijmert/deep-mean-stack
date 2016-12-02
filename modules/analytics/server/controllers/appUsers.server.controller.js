@@ -50,7 +50,7 @@ exports.getAudienceCounts = function(req, res) {
           $match:{
             $and: [
               { _id: { $in: deviceIds } },
-              req.body.filter
+              match
             ]
           },
         }, {
