@@ -33,7 +33,7 @@ function sendConfirmEmail(req, res, user) {
       res.render(path.resolve('modules/users/server/templates/verify-email'), {
         name: user.firstName + ' ' + user.lastName,
         appName: config.app.title,
-        url: httpTransport + req.headers.host + '/app/auth/verify?verifyToken=' + user.confirmToken + '&email=' + user.email
+        url: httpTransport + config.url + '/app/auth/verify?verifyToken=' + user.confirmToken + '&email=' + user.email
       }, function (err, emailHTML) {
         if (err) {
           reject(err);
