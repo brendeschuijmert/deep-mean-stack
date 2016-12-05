@@ -105,11 +105,13 @@ exports.update = function (req, res) {
     if ((req.body.isPaused || !req.body.isActive) && campaign.deliverySchedule) {
       console.log('cancelling notifications');
       // if campaign become paused or inactive, cancel scheduled job
+      campaign.status = 'PAUSED';
       scheduler.cancelJob(campaign.deliverySchedule);
       campaign.deliverySchedule.jobId = '';
       promise = campaign.deliverySchedule.save();
     } else if (!req.body.isPaused && req.body.isActive) {
       // if campaign becomes active and unpaused, schedule notifications
+      campaign.status = 'ACTIVE';
       console.log('scheduling notifications');
       promise = scheduler.scheduleNotifications(req.campaign, req.application, true);
     }
@@ -118,6 +120,7 @@ exports.update = function (req, res) {
     console.log('job has expired. cancelling job');
     scheduler.cancelJob(campaign.deliverySchedule);
     campaign.deliverySchedule.jobId = '';
+    campaign.status = 'COMPLETED';
     promise = campaign.deliverySchedule.save();
   }
 
@@ -146,10 +149,13 @@ exports.delete = function (req, res) {
 
   if (campaign.deliverySchedule) {
     scheduler.cancelJob(campaign.deliverySchedule);
-    campaign.deliverySchedule.remove();
+    campaign.deliverySchedule.jobId = '';
+    campaign.deliverySchedule.save();
   }
 
-  campaign.remove(function (err) {
+  campaign.status = 'DELETED';
+
+  campaign.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -165,7 +171,8 @@ exports.delete = function (req, res) {
  */
 exports.list = function (req, res) {
   Campaign.find({
-    application: req.application._id
+    application: req.application._id,
+    status: { $ne: 'DELETED' }
   }).populate([{
     path: 'application'
   }, {

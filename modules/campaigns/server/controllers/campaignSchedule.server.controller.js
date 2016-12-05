@@ -26,7 +26,14 @@ exports.save = function (req, res) {
     req.campaign.deliverySchedule = campaignSchedule;
   }
 
-  var promise = req.campaign.isActive && !req.campaign.isPaused ? scheduler.scheduleNotifications(req.campaign, req.application) : campaignSchedule.save();
+  var promise;
+  if (req.campaign.isActive && !req.campaign.isPaused) {
+    promise = scheduler.scheduleNotifications(req.campaign, req.application);
+    req.campaign.status = 'ACTIVE';
+  } else {
+    promise = campaignSchedule.save();
+  }
+
   promise.then(function() {
     return req.campaign.save();
   }).then(function() {
@@ -54,6 +61,7 @@ exports.delete = function (req, res) {
         });
       } else {
         delete req.campaign.deliverySchedule;
+        req.campaign.status = 'PAUSED';
         req.campaign.save(function(err) {
           if (err) {
             return res.status(400).send({

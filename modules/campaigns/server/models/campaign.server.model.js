@@ -107,6 +107,10 @@ var CampaignSchema = new Schema({
   application: {
     type: Schema.ObjectId,
     ref: 'Application'
+  },
+  status: {
+    type: String,
+    default: 'DRAFT'
   }
 });
 

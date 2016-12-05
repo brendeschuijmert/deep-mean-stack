@@ -77,7 +77,8 @@ function checkSchedule(application, campaign) {
     // if expiry date is set for campaign, let's close scheduled job if expired
     cancelJob(deliverySchedule);
     deliverySchedule.jobId = '';
-    return deliverySchedule.save();
+    campaign.status = 'COMPLETED';
+    return Promise.all([deliverySchedule.save(), campaign.save()]);
   } else {
     // sending push notifications
     pushNotificationsLib.send(application, campaign);
