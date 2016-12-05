@@ -1412,6 +1412,31 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}/campaigns/{campaignId}/duplicate:
+    get:
+      summary: duplicate a campaign
+      description: |
+        Duplicate campaign
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+        - name: campaignId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: An object of campaign
+          schema:
+            $ref: '#/definitions/Campaign'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
   /applications/{applicationId}/analytics/devicesByPlatform:
     get:
       summary: retrieve device analytics

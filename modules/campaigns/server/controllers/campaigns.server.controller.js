@@ -12,6 +12,8 @@ var path = require('path'),
   moment = require('moment'),
   Application = mongoose.model('Application'),
   Campaign = mongoose.model('Campaign'),
+  CampaignSchedule = mongoose.model('CampaignSchedule'),
+  ImageModel = mongoose.model('Image'),
   config = require(path.resolve('./config/config')),
   scheduler = require('../libs/scheduler.server.lib'),
   ImageLib = require(path.resolve('./modules/core/server/libs/images.server.lib')),
@@ -163,6 +165,48 @@ exports.delete = function (req, res) {
     } else {
       res.json({ status: 'success' });
     }
+  });
+};
+
+exports.duplicate = function (req, res) {
+  var newCampaignJSON = _.pick(req.campaign, 'application', 'message', 'messagePosition', 'expiresAt', 'deliveryAction', 'tags', 'title', 'platform', 'loopCount', 'loopDelay', 'url', 'campaignType', 'segment');
+  newCampaignJSON.status = 'DRAFT';
+
+  var newCampaign = new Campaign(newCampaignJSON);
+  var imagePromise = Promise.resolve(null);
+  if (req.campaign.animation) {
+    var newAnimation = new ImageModel(_.pick(req.campaign.animation, 'type', 'url', 'size', 'duration'));
+    imagePromise = newAnimation.save();
+  }
+
+  var schedulePromise = Promise.resolve(null);
+  if (req.campaign.deliverySchedule) {
+    var newSchedule = new CampaignSchedule(_.pick(req.campaign.deliverySchedule, 'repeat', 'sendDate', 'timeZone', 'status', 'frequency'));
+    schedulePromise = newSchedule.save();
+  }
+
+  Promise.all([imagePromise, schedulePromise, newCampaign.save()])
+  .then(function(result) {
+    var image = result[0];
+    var schedule = result[1];
+    var campaign = result[2];
+    if (image) {
+      campaign.animation = image._id;
+    }
+    if (schedule) {
+      campaign.deliverySchedule = schedule._id;
+      schedule.campaign = campaign._id;
+      schedule.save();
+    }
+    return campaign.save();
+  })
+  .then(function(campaign) {
+    res.json(campaign);
+  })
+  .catch(function(err) {
+    return res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
   });
 };
 
