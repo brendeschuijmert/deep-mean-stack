@@ -21,6 +21,9 @@ module.exports = function (app) {
   app.route('/api/applications/:applicationId/campaigns/:campaignId/image').all(campaignsPolicy.isAllowed)
     .post(campaigns.uploadImage);
 
+  app.route('/api/applications/:applicationId/campaigns/:campaignId/duplicate').all(campaignsPolicy.isAllowed)
+    .get(campaigns.duplicate);
+
   // Finish by binding the campaign middleware
   app.param('campaignId', campaigns.campaignByID);
 };
