@@ -51,7 +51,7 @@ exports.update = function (req, res) {
   //TODO: Support for image
   application = _.extend(
     application,
-    _.pick(req.body, 'fcmServerKey', 'apiKey', 'apiSecret', 'packageName', 'senderId', 'appName')
+    _.pick(req.body, 'fcmServerKey', 'apiKey', 'apiSecret', 'packageName', 'senderId', 'appName', 'image')
   );
 
   application.save(function (err) {
