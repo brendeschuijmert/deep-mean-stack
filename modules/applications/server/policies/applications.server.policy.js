@@ -23,6 +23,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/applications/:applicationId/pem',
       permissions: '*'
+    }, {
+      resources: '/api/applications/:applicationId/image',
+      permissions: '*'
     }]
   }, {
     roles: ['user'],
@@ -34,6 +37,9 @@ exports.invokeRolesPolicies = function () {
       permissions: '*'
     }, {
       resources: '/api/applications/:applicationId/pem',
+      permissions: '*'
+    }, {
+      resources: '/api/applications/:applicationId/image',
       permissions: '*'
     }]
   }]);
