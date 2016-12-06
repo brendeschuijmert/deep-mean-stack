@@ -171,6 +171,7 @@ exports.delete = function (req, res) {
 exports.duplicate = function (req, res) {
   var newCampaignJSON = _.pick(req.campaign, 'application', 'message', 'messagePosition', 'expiresAt', 'deliveryAction', 'tags', 'title', 'platform', 'loopCount', 'loopDelay', 'url', 'campaignType', 'segment');
   newCampaignJSON.status = 'DRAFT';
+  newCampaignJSON.title = newCampaignJSON.title + ' - copy';
 
   var newCampaign = new Campaign(newCampaignJSON);
   var imagePromise = Promise.resolve(null);
