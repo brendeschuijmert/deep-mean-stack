@@ -129,7 +129,7 @@ exports.update = function (req, res) {
 
   campaign = _.extend(
     campaign,
-    _.pick(req.body, 'isPaused', 'isActive', 'message', 'messagePosition', 'expiresAt', 'deliveryAction', 'tags', 'title', 'platform', 'loopCount', 'loopDelay', 'url', 'campaignType', 'segment')
+    _.pick(req.body, 'isPaused', 'isActive', 'message', 'messagePosition', 'expiresAt', 'deliveryAction', 'tags', 'title', 'platform', 'loopCount', 'loopDelay', 'url', 'campaignType', 'segment', 'animation')
   );
 
   promise.then(function() {
