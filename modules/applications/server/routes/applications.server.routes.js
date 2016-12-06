@@ -22,6 +22,9 @@ module.exports = function (app) {
   app.route('/api/applications/:applicationId/pem').all(applicationsPolicy.isAllowed)
     .post(applications.uploadPem);
 
+  app.route('/api/applications/:applicationId/image').all(applicationsPolicy.isAllowed)
+    .post(applications.uploadImage);
+
   // Finish by binding the application middleware
   app.param('applicationId', applications.applicationByID);
 };
