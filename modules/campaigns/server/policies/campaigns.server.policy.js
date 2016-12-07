@@ -29,6 +29,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/applications/:applicationId/campaigns/:campaignId/duplicate',
       permissions: '*'
+    }, {
+      resources: '/api/applications/:applicationId/campaign_counts',
+      permissions: '*'
     }]
   }, {
     roles: ['user'],
@@ -43,6 +46,9 @@ exports.invokeRolesPolicies = function () {
       permissions: '*'
     }, {
       resources: '/api/applications/:applicationId/campaigns/:campaignId/duplicate',
+      permissions: '*'
+    }, {
+      resources: '/api/applications/:applicationId/campaign_counts',
       permissions: '*'
     }]
   }]);

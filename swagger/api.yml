@@ -1208,6 +1208,25 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}/campaign_counts:
+    get:
+      summary: get campaign counts by status
+      description: |
+        get campaign counts by status
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Campaigns
+      responses:
+        '200':
+          description: campaign counts by status
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /applications/{applicationId}/campaigns:
     get:
       summary: list campaigns

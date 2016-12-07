@@ -18,6 +18,9 @@ module.exports = function (app) {
     .put(campaigns.update)
     .delete(campaigns.delete);
 
+  app.route('/api/applications/:applicationId/campaign_counts').all(campaignsPolicy.isAllowed)
+    .get(campaigns.getCount);
+
   app.route('/api/applications/:applicationId/campaigns/:campaignId/image').all(campaignsPolicy.isAllowed)
     .post(campaigns.uploadImage);
 

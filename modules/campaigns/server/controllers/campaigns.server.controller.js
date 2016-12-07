@@ -235,6 +235,34 @@ exports.list = function (req, res) {
 };
 
 /**
+ * Get total count of campaigns by status
+ */
+exports.getCount = function (req, res) {
+  Campaign.aggregate([
+    {
+      $match:{
+        application: req.application._id,
+        status: { $ne: 'DELETED' }
+      },
+    }, {
+      $group: {
+        _id: {
+          status: '$status',
+        },
+        count: { $sum: 1 }
+      }
+    }
+  ]).then(function(result) {
+    res.json(result);
+  })
+  .catch(function(err) {
+    res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
+  });
+};
+
+/**
  * Campaign middleware
  */
 exports.campaignByID = function (req, res, next, id) {
