@@ -87,7 +87,7 @@ exports.delete = function (req, res) {
 exports.list = function (req, res) {
   Application.find({
     user: req.user.role === 'USER' ? req.user.parent : req.user
-  }).populate('image').sort('-created').exec(function (err, applications) {
+  }).sort('-created').exec(function (err, applications) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -160,7 +160,7 @@ exports.applicationByID = function (req, res, next, id) {
     });
   }
 
-  Application.findById(id).populate('image').exec(function (err, application) {
+  Application.findById(id).exec(function (err, application) {
     if (err) {
       return next(err);
     } else if (!application) {
