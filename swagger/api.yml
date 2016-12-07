@@ -1587,6 +1587,18 @@ paths:
           required: false
           in: query
           type: string
+        - name: eventTarget
+          required: false
+          in: query
+          type: string
+        - name: eventType
+          required: false
+          in: query
+          type: string
+        - name: eventValue
+          required: false
+          in: query
+          type: string
         - name: groupBy
           required: false
           in: query

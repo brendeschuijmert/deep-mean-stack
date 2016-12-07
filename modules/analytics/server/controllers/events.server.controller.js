@@ -42,7 +42,7 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
     segmentPromise = Segment.findById(segmentId).exec();
   }
 
-  var eventPromise = Promise.resolve({ eventTarget: '', eventType: '', eventValue: '' });
+  var eventPromise = Promise.resolve({ eventTarget: req.query.eventTarget || '', eventType: req.query.eventType || '', eventValue: req.query.eventValue || '' });
   if (eventId) {
     eventPromise = CustomEventModel.findById(eventId).exec();
   }
