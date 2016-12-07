@@ -11,14 +11,13 @@ var path = require('path'),
   multer = require('multer'),
   config = require(path.resolve('./config/config')),
   Application = mongoose.model('Application'),
-  ImageLib = require(path.resolve('./modules/core/server/libs/images.server.lib')),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
  * Create a application
  */
 exports.create = function (req, res) {
-  var appJson = _.pick(req.body, 'packageName', 'appName', 'fcmServerKey', 'senderId');
+  var appJson = _.pick(req.body, 'packageName', 'appName', 'fcmServerKey', 'senderId', 'image');
   var application = new Application(appJson);
   application.apiSecret = randomstring.generate(20);
   application.apiKey = randomstring.generate(20);
@@ -51,7 +50,7 @@ exports.update = function (req, res) {
   //TODO: Support for image
   application = _.extend(
     application,
-    _.pick(req.body, 'fcmServerKey', 'apiKey', 'apiSecret', 'packageName', 'senderId', 'appName', 'image')
+    _.pick(req.body, 'fcmServerKey', 'packageName', 'senderId', 'appName', 'image')
   );
 
   application.save(function (err) {
@@ -145,54 +144,6 @@ exports.uploadPem = function(req, res) {
             message: errorHandler.getErrorMessage(err)
           });
         });
-      });
-    }
-  });
-};
-
-/**
- * Uploads animation
- */
-exports.uploadImage = function (req, res) {
-  var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-      cb(null, config.uploads.dest);
-    },
-    filename: function(req, file, cb) {
-      cb(null, randomstring.generate(10) + '_' + file.originalname);
-    }
-  });
-  var upload = multer(_.extend(config.uploads, {
-    storage: storage
-  })).single('image');
-  var application = req.application;
-  upload(req, res, function(uploadError) {
-    if(uploadError) {
-      return res.status(400).send({
-        message: 'Error occurred while uploading picture'
-      });
-    } else {
-      fs.chmodSync(req.file.path, '0777');
-      ImageLib.uploadToAWS(req.file, function(err, image) {
-        fs.unlinkSync(req.file.path);
-        if (err) {
-          return res.status(400).send({
-            message: err
-          });
-        }
-
-        if (image) {
-          application.image = image;
-          application.save(function (err) {
-            if (err) {
-              return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-              });
-            } else {
-              res.json(application);
-            }
-          });
-        }
       });
     }
   });
