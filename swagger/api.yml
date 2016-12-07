@@ -783,7 +783,7 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
-  /applications/{applicationId}/image:
+  /images/upload:
     post:
       consumes:
       - application/x-www-form-urlencoded
@@ -791,21 +791,15 @@ paths:
       description: |
         uploads icon for application
       parameters:
-        - name: applicationId
-          required: true
-          in: path
-          type: string
         - name: image
           required: true
           in: formData
           type: file
       tags:
-        - Applications
+        - Image
       responses:
         '200':
-          description: An object of Image
-          schema:
-            $ref: '#/definitions/Application'
+          description: An object of Image'
         default:
           description: Unexpected Error
           schema:
@@ -1831,9 +1825,9 @@ definitions:
   Application:
     type: object
     properties:
-      _id:
+      image:
         type: string
-        description: Application ID
+        description: icon url
       appName:
         type: string
         description: Name of the application

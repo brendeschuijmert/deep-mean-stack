@@ -32,20 +32,24 @@ exports.uploadToAWS = function(imgObj, cb, staticImg) {
       Key: 'campaigns/' + imgObj.filename
     };
     s3Bucket.putObject(params, function(err, data){
-      var imageJson = {
-        url: 'https://s3.amazonaws.com/' + config.aws.bucket + '/' + params.Key,
-        type: imgObj.mimetype,
-        size: imgObj.size,
-        duration: gifInfo.duration || 0
-      };
-      var image = new ImageModel(imageJson);
-      image.save(function (err) {
-        if (err) {
-          cb(err, null);
-        } else {
-          cb(null, image);
-        }
-      });
+      if (!staticImg) {
+        var imageJson = {
+          url: 'https://s3.amazonaws.com/' + config.aws.bucket + '/' + params.Key,
+          type: imgObj.mimetype,
+          size: imgObj.size,
+          duration: gifInfo.duration || 0
+        };
+        var image = new ImageModel(imageJson);
+        image.save(function (err) {
+          if (err) {
+            cb(err, null);
+          } else {
+            cb(null, image);
+          }
+        });
+      } else {
+        cb(null, 'https://s3.amazonaws.com/' + config.aws.bucket + '/' + params.Key);
+      }
     });
   } else {
     cb('Image is not valid gif.', null);

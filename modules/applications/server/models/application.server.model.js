@@ -61,8 +61,9 @@ var ApplicationSchema = new Schema({
     trim: true
   },
   image: {
-    type: Schema.ObjectId,
-    ref: 'Image'
+    type: String,
+    default: '',
+    trim: true
   },
   user: {
     type: Schema.ObjectId,
