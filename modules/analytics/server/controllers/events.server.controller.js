@@ -34,6 +34,10 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
     year: {
       _id: { year: { $year: '$created' } },
       count: { $sum: 1 }
+    },
+    total: {
+      _id: 'total',
+      count: { $sum: 1 }
     }
   };
 
