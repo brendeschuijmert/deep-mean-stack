@@ -47,7 +47,6 @@ exports.read = function (req, res) {
 exports.update = function (req, res) {
   var application = req.application;
 
-  //TODO: Support for image
   application = _.extend(
     application,
     _.pick(req.body, 'fcmServerKey', 'packageName', 'senderId', 'appName', 'image')
