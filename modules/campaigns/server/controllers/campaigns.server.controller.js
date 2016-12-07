@@ -113,7 +113,8 @@ exports.update = function (req, res) {
       promise = campaign.deliverySchedule.save();
     } else if (!req.body.isPaused && req.body.isActive) {
       // if campaign becomes active and unpaused, schedule notifications
-      campaign.status = 'ACTIVE';
+      // immediate pushes are completed as soon as it is pushed
+      campaign.status = campaign.deliverySchedule.frequency === 'immediate' ? 'COMPLETED' : 'ACTIVE';
       console.log('scheduling notifications');
       promise = scheduler.scheduleNotifications(req.campaign, req.application, true);
     }
