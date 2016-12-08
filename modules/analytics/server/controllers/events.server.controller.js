@@ -46,7 +46,7 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
     segmentPromise = Segment.findById(segmentId).exec();
   }
 
-  var eventPromise = Promise.resolve({ eventTarget: req.query.eventTarget || '', eventType: req.query.eventType || '', eventValue: req.query.eventValue || '' });
+  var eventPromise = Promise.resolve(_.pick(req.query, 'eventTarget', 'eventValue', 'eventValue'));
   if (eventId) {
     eventPromise = CustomEventModel.findById(eventId).exec();
   }
