@@ -104,14 +104,16 @@ exports.update = function (req, res) {
   if ((req.body.hasOwnProperty('isPaused') && req.body.isPaused !== campaign.isPaused) ||
     (req.body.hasOwnProperty('isActive') && req.body.isActive !== campaign.isActive)
   ){
-    if ((req.body.isPaused || !req.body.isActive) && campaign.deliverySchedule) {
+    var isPaused = req.body.hasOwnProperty('isPaused') ? req.body.isPaused : campaign.isPaused;
+    var isActive = req.body.hasOwnProperty('isActive') ? req.body.isActive : campaign.isActive;
+    if ((isPaused || !isActive) && campaign.deliverySchedule) {
       console.log('cancelling notifications');
       // if campaign become paused or inactive, cancel scheduled job
       campaign.status = 'PAUSED';
       scheduler.cancelJob(campaign.deliverySchedule);
       campaign.deliverySchedule.jobId = '';
       promise = campaign.deliverySchedule.save();
-    } else if (!req.body.isPaused && req.body.isActive) {
+    } else if (!isPaused && isActive) {
       // if campaign becomes active and unpaused, schedule notifications
       // immediate pushes are completed as soon as it is pushed
       campaign.status = campaign.deliverySchedule.frequency === 'immediate' ? 'COMPLETED' : 'ACTIVE';
@@ -126,7 +128,6 @@ exports.update = function (req, res) {
     campaign.status = 'COMPLETED';
     promise = campaign.deliverySchedule.save();
   }
-
 
   campaign = _.extend(
     campaign,
