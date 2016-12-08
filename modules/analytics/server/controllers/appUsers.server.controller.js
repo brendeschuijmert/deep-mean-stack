@@ -87,7 +87,7 @@ exports.getAudienceCountByFilter = function(req, res) {
   if (req.body.appUserFilter) {
     appUserFilter = _.extend(appUserFilter, req.body.appUserFilter);
   }
-  
+
   AppUser.find(appUserFilter).select('userDevice')
   .then(function(userDevices) {
     deviceIds = _.map(userDevices, function(d) { return d.userDevice; });
@@ -101,7 +101,7 @@ exports.getAudienceCountByFilter = function(req, res) {
         },
       }, {
         $group: {
-          _id: 'filtered',
+          _id: req.body.groupBy || 'filtered',
           count: { $sum: 1 }
         }
       }

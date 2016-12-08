@@ -107,19 +107,48 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
   });
 };
 
-exports.getDPCountByStatus = function(req, res) {
+exports.getDPCount = function(req, res) {
+  var groupBy = req.query.groupBy;
+  var startDate = req.query.startDate || '1980-01-01';
+  var endDate = req.query.endDate || new Date();
+  var status = req.query.status;
+
+  var groupMap = {
+    day: {
+      _id: { year: { $year: '$created' }, month: { $month: '$created' }, day: { $dayOfMonth: '$created' } },
+      count: { $sum: 1 }
+    },
+    month: {
+      _id: { year: { $year: '$created' }, month: { $month: '$created' } },
+      count: { $sum: 1 }
+    },
+    year: {
+      _id: { year: { $year: '$created' } },
+      count: { $sum: 1 }
+    },
+    total: {
+      _id: 'total',
+      count: { $sum: 1 }
+    }
+  };
+
+  var filters = {
+    application: req.application._id,
+    created: {
+      $gte: moment(startDate).toDate(),
+      $lte: moment(endDate).toDate()
+    }
+  };
+
+  if (req.query.hasOwnProperty('status')) {
+    filters.status = status * 1;
+  }
+
   PNotification.aggregate([
     {
-      $match:{
-        application: req.application._id
-      },
+      $match: filters,
     }, {
-      $group: {
-        _id: {
-          status: '$status',
-        },
-        count: { $sum: 1 }
-      }
+      $group: groupMap[req.query.groupBy] || groupMap.total
     }
   ])
   .then(function(result) {
