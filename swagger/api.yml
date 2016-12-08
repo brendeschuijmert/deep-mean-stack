@@ -1506,6 +1506,22 @@ paths:
           required: true
           in: path
           type: string
+        - name: startDate
+          required: false
+          in: query
+          type: string
+        - name: endDate
+          required: false
+          in: query
+          type: string
+        - name: groupBy
+          required: false
+          in: query
+          type: string
+        - name: status
+          required: false
+          in: query
+          type: number
       tags:
         - Analytics
       responses:
@@ -1597,6 +1613,12 @@ paths:
               filter:
                 type: object
                 description: filter object
+              appUserFilter:
+                type: object
+                description: user filter
+              groupBy:
+                type: string
+                description: grouping condition if needed. leave blank if no need
       tags:
         - Analytics
       responses:
