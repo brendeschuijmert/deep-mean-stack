@@ -79,12 +79,21 @@ exports.getAudienceCounts = function(req, res) {
 
 exports.getAudienceCountByFilter = function(req, res) {
   var deviceIds = [];
-  AppUser.find({ application: req.application._id, userDevice: { $exists: true } }).select('userDevice')
+  var appUserFilter = {
+    application: req.application._id,
+    userDevice: { $exists: true }
+  };
+
+  if (req.body.appUserFilter) {
+    appUserFilter = _.extend(appUserFilter, req.body.appUserFilter);
+  }
+  
+  AppUser.find(appUserFilter).select('userDevice')
   .then(function(userDevices) {
     deviceIds = _.map(userDevices, function(d) { return d.userDevice; });
     return UserDevice.aggregate([
       {
-        $match:{
+        $match: {
           $and: [
             { _id: { $in: deviceIds } },
             req.body.filter
