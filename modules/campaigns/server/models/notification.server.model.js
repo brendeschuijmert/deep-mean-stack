@@ -25,6 +25,10 @@ var NotificationSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Campaign'
   },
+  application: {
+    type: Schema.ObjectId,
+    ref: 'Application'
+  },
   status: {
     type: Number,
     enum: [0, 1, 2, 3], // 0 - not sent, 1 - failed to send, 2 - sent, 3 - received

@@ -1496,6 +1496,25 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /applications/{applicationId}/analytics/dpCount:
+    get:
+      summary: retrieve dp analytics
+      description: |
+        retrieve dp count by status
+      parameters:
+        - name: applicationId
+          required: true
+          in: path
+          type: string
+      tags:
+        - Analytics
+      responses:
+        '200':
+          description: dp analytics
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
   /applications/{applicationId}/analytics/getAudiences:
     get:
       summary: retrieve audience analytics
