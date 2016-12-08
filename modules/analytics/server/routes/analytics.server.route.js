@@ -24,4 +24,7 @@ module.exports = function (app) {
 
   app.route('/api/applications/:applicationId/analytics/events')
     .get(events.getEventsAnalyticsBySegment);
+
+  app.route('/api/applications/:applicationId/analytics/dpCount')
+    .get(events.getDPCountByStatus);
 };

@@ -26,6 +26,7 @@ exports.send = function(application, campaign) {
       var notification = new PNotification();
       notification.campaign = campaign;
       notification.appUser = user;
+      notification.application = application._id;
       notification.save(function(err, newNotification){
         if (err) {
           console.log(err);

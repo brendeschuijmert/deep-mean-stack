@@ -12,6 +12,7 @@ var path = require('path'),
   AppUser = mongoose.model('AppUser'),
   Segment = mongoose.model('Segment'),
   AnalyticEvent = mongoose.model('AnalyticEvent'),
+  PNotification = mongoose.model('Notification'),
   CustomEventModel = mongoose.model('CustomEvent'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
@@ -96,6 +97,31 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
       $group: groupMap[req.query.groupBy] || groupMap.day
     });
   })
+  .then(function(result) {
+    res.json(result);
+  })
+  .catch(function(err) {
+    res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
+  });
+};
+
+exports.getDPCountByStatus = function(req, res) {
+  PNotification.aggregate([
+    {
+      $match:{
+        application: req.application._id
+      },
+    }, {
+      $group: {
+        _id: {
+          status: '$status',
+        },
+        count: { $sum: 1 }
+      }
+    }
+  ])
   .then(function(result) {
     res.json(result);
   })
