@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
   AppUser = mongoose.model('AppUser'),
   Segment = mongoose.model('Segment'),
   _ = require('lodash'),
+  filterLib = require('./filter.server.lib'),
   Promise = require('bluebird');
 
 mongoose.Promise = Promise;
@@ -21,7 +22,7 @@ exports.getAppUsersBySegment = function(application, segmentId, offset, limit) {
       var match = segment ? JSON.parse(segment.filter) : {};
       return AppUser.find({ application: application._id }).populate({
         path: 'userDevice',
-        match: match
+        match: filterLib.parseFilter(match)
       });
     }).then(function(appUsers) {
       // now filter app users

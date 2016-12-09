@@ -11,6 +11,7 @@ var path = require('path'),
   AppUser = mongoose.model('AppUser'),
   Segment = mongoose.model('Segment'),
   appUserLib = require('../libs/appUser.server.lib'),
+  filterLib = require('../libs/filter.server.lib'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
@@ -50,7 +51,7 @@ exports.getAudienceCounts = function(req, res) {
           $match:{
             $and: [
               { _id: { $in: deviceIds } },
-              match
+              filterLib.parseFilter(match)
             ]
           },
         }, {
@@ -85,7 +86,7 @@ exports.getAudienceCountByFilter = function(req, res) {
   };
 
   if (req.body.appUserFilter) {
-    appUserFilter = _.extend(appUserFilter, req.body.appUserFilter);
+    appUserFilter = _.extend(appUserFilter, filterLib.parseFilter(req.body.appUserFilter));
   }
 
   AppUser.find(appUserFilter).select('userDevice')
@@ -96,7 +97,7 @@ exports.getAudienceCountByFilter = function(req, res) {
         $match: {
           $and: [
             { _id: { $in: deviceIds } },
-            req.body.filter
+            filterLib.parseFilter(req.body.filter)
           ]
         },
       }, {
