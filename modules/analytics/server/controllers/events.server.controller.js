@@ -14,6 +14,7 @@ var path = require('path'),
   AnalyticEvent = mongoose.model('AnalyticEvent'),
   PNotification = mongoose.model('Notification'),
   CustomEventModel = mongoose.model('CustomEvent'),
+  filterLib = require('../libs/filter.server.lib'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 exports.getEventsAnalyticsBySegment = function(req, res) {
@@ -69,7 +70,7 @@ exports.getEventsAnalyticsBySegment = function(req, res) {
     var deviceConditions = {
       $and: [
         { appUser: { $in: userIds } },
-        filter
+        filterLib.parseFilter(filter)
       ]
     };
     return UserDevice.find(deviceConditions).select('_id');
