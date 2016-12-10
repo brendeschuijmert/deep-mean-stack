@@ -43,7 +43,7 @@ var resqueJobs = {
       var msgData = _.pick(campaign, 'animation', 'message', 'messagePosition', 'url', 'campaignType');
 
       // supplying display type (nova, supernova, dpi...)
-      var platformIndex = _.findIndex(campaign.platform, { name: notification.appUser.userDevice.devicePlatform });
+      var platformIndex = _.findIndex(campaign.platform, { name: notification.appUser.userDevice.devicePlatform.toLowerCase() });
       if (platformIndex > -1) {
         msgData.displayType = campaign.platform[platformIndex].displayType;
       }
