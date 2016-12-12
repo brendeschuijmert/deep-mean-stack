@@ -89,7 +89,9 @@ exports.getAudienceCountByFilter = function(req, res) {
     appUserFilter = _.extend(appUserFilter, filterLib.parseFilter(req.body.appUserFilter));
   }
 
-  AppUser.find(appUserFilter).select('userDevice')
+  AppUser.find(appUserFilter)
+  .sort('-created')
+  .select('userDevice')
   .then(function(userDevices) {
     deviceIds = _.map(userDevices, function(d) { return d.userDevice; });
     return UserDevice.aggregate([
