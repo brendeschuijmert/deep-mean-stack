@@ -20,11 +20,13 @@ exports.getAppUsersBySegment = function(application, segmentId, offset, limit) {
 
     promise.then(function(segment) {
       var match = segment ? JSON.parse(segment.filter) : {};
-      return AppUser.find({ application: application._id, userDevice: { $exists: true } }).populate({
+      return AppUser.find({ application: application._id }).populate({
         path: 'userDevice',
         match: filterLib.parseFilter(match)
       }).sort('-created');
     }).then(function(appUsers) {
+      // now filter app users
+      appUsers = _.filter(appUsers, function(u) { return u.userDevice; });
       limit = limit * 1;
       if (limit) {
         appUsers = appUsers.slice(offset, offset + limit);
