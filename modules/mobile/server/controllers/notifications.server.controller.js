@@ -40,7 +40,7 @@ exports.getUnreadNotifications = function(req, res) {
       if (campaign.animation) {
         campaign.animation.expiresAt = campaign.animation.duration * campaign.loopCount + (campaign.loopCount - 1) * campaign.loopDelay;
       }
-      var msgData = _.pick(campaign, 'animation', 'message', 'messagePosition', 'url', 'campaignType');
+      var msgData = _.pick(campaign, 'animation', 'message', 'messagePosition', 'url', 'campaignType', 'loopCount', 'loopDelay');
 
       // supplying display type (nova, supernova, dpi...)
       var platformIndex = _.findIndex(campaign.platform, { name: notification.appUser.userDevice.devicePlatform });
@@ -59,6 +59,7 @@ exports.getUnreadNotifications = function(req, res) {
     });
   });
 };
+
 
 exports.setNotificationRead = function(req, res) {
   req.notification.status = 3;

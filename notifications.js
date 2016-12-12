@@ -40,7 +40,7 @@ var resqueJobs = {
       if (campaign.animation) {
         campaign.animation.expiresAt = campaign.animation.duration * campaign.loopCount + (campaign.loopCount - 1) * campaign.loopDelay;
       }
-      var msgData = _.pick(campaign, 'animation', 'message', 'messagePosition', 'url', 'campaignType');
+      var msgData = _.pick(campaign, 'animation', 'message', 'messagePosition', 'url', 'campaignType', 'loopDelay', 'loopCount');
 
       // supplying display type (nova, supernova, dpi...)
       var platformIndex = _.findIndex(campaign.platform, { name: notification.appUser.userDevice.devicePlatform.toLowerCase() });
