@@ -68,14 +68,15 @@ exports.update = function (req, res) {
  */
 exports.delete = function (req, res) {
   var segment = req.segment;
+  segment.status = 'DELETED';
 
-  segment.remove(function (err) {
+  segment.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.json(segment);
+      res.json({ success: true });
     }
   });
 };
@@ -84,7 +85,7 @@ exports.delete = function (req, res) {
  * List of Segments
  */
 exports.list = function (req, res) {
-  Segment.find({ application: req.application._id }).sort('-created').exec(function (err, segments) {
+  Segment.find({ application: req.application._id, status: { $ne: 'DELETED' } }).sort('-created').exec(function (err, segments) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
