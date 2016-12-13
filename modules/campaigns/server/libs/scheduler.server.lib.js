@@ -13,9 +13,14 @@ var pushNotificationsLib = require(path.resolve('./modules/mobile/server/libs/pu
  * @returns {string}
  */
 function getCrontabString(scheduleObj) {
+  // NOTE sendDate is always coming as UTC time
   var scheduledTime = moment.tz(scheduleObj.sendDate, scheduleObj.timeZone);
+  var utcOffset = scheduledTime.utcOffset();
+  scheduledTime.subtract(utcOffset, 'minute');
+
   var cronArray = [];
   scheduledTime.tz(moment.tz.guess()); // set as server time zone
+
   cronArray.push(scheduledTime.minute());
   cronArray.push(scheduledTime.hour());
   switch (scheduleObj.repeat) {
