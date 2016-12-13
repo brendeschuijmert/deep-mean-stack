@@ -32,6 +32,10 @@ var SegmentSchema = new Schema({
   },
   filter: {
     type: String
+  },
+  status: {
+    type: String,
+    default: 'ACTIVE'
   }
 });
 
