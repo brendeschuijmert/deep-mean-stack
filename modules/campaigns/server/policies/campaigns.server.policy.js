@@ -71,19 +71,19 @@ exports.isAllowed = function (req, res, next) {
         return appAccessLib.getAppAccess(req.application, 'campaigns', req.user)
         .then(function(allowed){
           if (allowed) {
-            return next();
+            next();
           } else {
-            return res.status(403).json({
+            res.status(403).json({
               message: 'User is not authorized to access this resource'
             });
           }
         }).catch(function(err){
-          return res.status(403).json({
+          res.status(403).json({
             message: 'User is not authorized to access this resource'
           });
         });
       } else {
-        return res.status(403).json({
+        res.status(403).json({
           message: 'User is not authorized'
         });
       }
