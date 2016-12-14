@@ -20,7 +20,7 @@ module.exports = {
   uploads: {
     dest: './tmp/', // tmp uploads path
     limits: {
-      fileSize: 1*1024*1024 // Max file size in bytes (1 MB)
+      fileSize: 5*1024*1024 // Max file size in bytes (1 MB)
     }
   },
   redis: {
