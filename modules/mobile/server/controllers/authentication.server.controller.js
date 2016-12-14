@@ -25,7 +25,8 @@ mongoose.Promise = Promise;
 exports.authenticate = function (req, res) {
   var uuid = req.body.uuid;
   var newAppUser = new AppUser({
-    uuid: uuid
+    uuid: uuid,
+    verified: true
   });
   var currentApplication;
 
@@ -56,12 +57,13 @@ exports.authenticate = function (req, res) {
     }
   })
   .then(function(currentAppUser){
-    if (!currentAppUser.verified) {
-      res.status(403).send({
-        message: 'Your account is not verified yet. Please verify by email or sms.'
-      });
-      return;
-    }
+    // Removing verification feature
+    // if (!currentAppUser.verified) {
+    //   res.status(403).send({
+    //     message: 'Your account is not verified yet. Please verify by email or sms.'
+    //   });
+    //   return;
+    // }
 
     var appJson = _.pick(currentApplication, '_id', 'packageName');
     var token = jwt.sign(appJson, config.mobileSessionSecret, {
