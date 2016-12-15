@@ -20,7 +20,7 @@ var CampaignScheduleSchema = new Schema({
   repeat: {
     type: String,
     enum: ['once', 'daily', 'weekly', 'monthly'],
-    default: 'once'
+    default: 'daily'
   },
   sendDate: {
     type: Date
