@@ -70,7 +70,8 @@ var CampaignSchema = new Schema({
   },
   messagePosition: {
     type: String,
-    enum: ['top', 'bottom', 'center']
+    enum: ['top', 'bottom', 'center'],
+    default: 'top'
   },
   expiresAt: {
     type: Date
