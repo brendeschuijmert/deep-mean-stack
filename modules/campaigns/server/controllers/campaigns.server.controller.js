@@ -9,7 +9,7 @@ var path = require('path'),
   randomstring = require('randomstring'),
   _ = require('lodash'),
   multer = require('multer'),
-  moment = require('moment'),
+  moment = require('moment-timezone'),
   Application = mongoose.model('Application'),
   Campaign = mongoose.model('Campaign'),
   CampaignSchedule = mongoose.model('CampaignSchedule'),
@@ -120,7 +120,7 @@ exports.update = function (req, res) {
       console.log('scheduling notifications');
       promise = scheduler.scheduleNotifications(req.campaign, req.application, true);
     }
-  } else if (req.body.expiresAt && moment().diff(req.body.expiresAt) > 0 && campaign.deliverySchedule) {
+  } else if (req.body.expiresAt && campaign.deliverySchedule && moment().diff(moment.tz(req.body.expiresAt, campaign.deliverySchedule.timeZone)) > 0) {
     // or if campaign is expired, cancel job
     console.log('job has expired. cancelling job');
     scheduler.cancelJob(campaign.deliverySchedule);
