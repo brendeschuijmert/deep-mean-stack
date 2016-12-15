@@ -78,7 +78,7 @@ function checkSchedule(application, campaign) {
     return Promise.resolve();
   }
 
-  if (campaign.expiresAt && moment().diff(campaign.expiresAt) > 0) {
+  if (campaign.expiresAt && moment().diff(moment.tz(campaign.expiresAt, campaign.deliverySchedule.timeZone)) > 0) {
     // if expiry date is set for campaign, let's close scheduled job if expired
     cancelJob(deliverySchedule);
     deliverySchedule.jobId = '';
