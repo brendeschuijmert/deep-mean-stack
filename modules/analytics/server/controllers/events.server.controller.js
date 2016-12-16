@@ -146,7 +146,7 @@ exports.getDPCount = function(req, res) {
   };
 
   if (req.query.hasOwnProperty('campaignId')) {
-    filters.campaign = req.query.campaignId;
+    filters.campaign = mongoose.Types.ObjectId(req.query.campaignId);
   }
 
   if (req.query.hasOwnProperty('status')) {
