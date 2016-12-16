@@ -130,6 +130,10 @@ exports.getDPCount = function(req, res) {
     total: {
       _id: 'total',
       count: { $sum: 1 }
+    },
+    status: {
+      _id: '$status',
+      count: { $sum : 1 }
     }
   };
 
@@ -140,6 +144,10 @@ exports.getDPCount = function(req, res) {
       $lte: moment(endDate).toDate()
     }
   };
+
+  if (req.query.hasOwnProperty('campaignId')) {
+    filters.campaign = req.query.campaignId;
+  }
 
   if (req.query.hasOwnProperty('status')) {
     filters.status = status * 1;
