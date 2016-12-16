@@ -31,6 +31,16 @@
       path: "/srv/dp-mean",
       "pre-deploy": "",
       "post-deploy": "nvm use 6.9; npm install; grunt build; pm2 startOrRestart ecosystem.json5 --env development"
+    },
+    production: {
+      key: "./pem/dp-mean.pem",
+      user: "ubuntu",
+      host: "52.6.70.119",
+      ref: "origin/master",
+      repo: "git@bitbucket.org:cmodels/dp-mean-stack.git",
+      path: "/srv/dp/dp-mean",
+      "pre-deploy": "",
+      "post-deploy": "nvm use 6.9; npm install; grunt build; pm2 startOrRestart ecosystem.json5 --env development"
     }
   }
 }
