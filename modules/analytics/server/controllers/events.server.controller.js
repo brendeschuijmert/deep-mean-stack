@@ -132,7 +132,7 @@ exports.getDPCount = function(req, res) {
       count: { $sum: 1 }
     },
     status: {
-      _id: '$status',
+      _id: { status: '$status' },
       count: { $sum : 1 }
     }
   };
