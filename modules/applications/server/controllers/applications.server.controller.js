@@ -17,7 +17,7 @@ var path = require('path'),
  * Create a application
  */
 exports.create = function (req, res) {
-  var appJson = _.pick(req.body, 'packageName', 'appName', 'fcmServerKey', 'senderId', 'image');
+  var appJson = _.pick(req.body, 'packageName', 'appName', 'fcmServerKey', 'senderId', 'image', 'environment');
   var application = new Application(appJson);
   application.apiSecret = randomstring.generate(20);
   application.apiKey = randomstring.generate(20);
@@ -49,7 +49,7 @@ exports.update = function (req, res) {
 
   application = _.extend(
     application,
-    _.pick(req.body, 'fcmServerKey', 'packageName', 'senderId', 'appName', 'image')
+    _.pick(req.body, 'fcmServerKey', 'packageName', 'senderId', 'appName', 'image', 'environment')
   );
 
   application.save(function (err) {

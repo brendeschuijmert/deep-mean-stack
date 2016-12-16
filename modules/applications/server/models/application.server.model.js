@@ -30,6 +30,11 @@ var ApplicationSchema = new Schema({
     unique: 'Package name already exists',
     required: 'Package name can not be blank'
   },
+  environment: {
+    type: String,
+    trim: true,
+    default: 'development'
+  },
   apiKey: {
     type: String,
     default: '',

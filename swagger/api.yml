@@ -1915,6 +1915,9 @@ definitions:
       fcmServerKey:
         type: string
         description: FCM Server Key used for push notifications on Android
+      environment:
+        type: string
+        description: development or production
   User:
     type: object
     properties:
