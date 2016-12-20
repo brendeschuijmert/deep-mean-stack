@@ -21,6 +21,9 @@ module.exports = function (app) {
     .put(adminPolicy.isAllowed, admin.validateParent, admin.update)
     .delete(adminPolicy.isAllowed, admin.validateParent, admin.delete);
 
+  app.route('/api/users/:userId/fetchToken')
+    .get(adminPolicy.isAllowed, admin.validateParent, admin.fetchToken);
+
   // Finish by binding the user middleware
   app.param('userId', admin.userByID);
 };

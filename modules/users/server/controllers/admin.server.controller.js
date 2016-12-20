@@ -6,6 +6,9 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
+  jwt = require('jsonwebtoken'),
+  config = require(path.resolve('./config/config')),
+  _ = require('lodash'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
@@ -90,7 +93,16 @@ exports.delete = function (req, res) {
  * List of Users
  */
 exports.list = function (req, res) {
-  User.find({ parent: req.user }, '-salt -password').sort({ firstName: 1, lastName: 1 }).populate('user').exec(function (err, users) {
+  var filter = {};
+  if (req.user.role === 'admin') {
+    filter.parent = req.user._id;
+  }
+
+  if (req.query.role) {
+    filter.role = req.query.role;
+  }
+
+  User.find(filter, '-salt -password').sort({ firstName: 1, lastName: 1 }).populate('user').exec(function (err, users) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -98,6 +110,16 @@ exports.list = function (req, res) {
     }
 
     res.json(users);
+  });
+};
+
+exports.fetchToken = function (req, res) {
+  var userJSON = _.pick(req.model.toJSON(), '_id', 'firstName', 'lastName', 'email', 'profileImageURL', 'company', 'role');
+  var token = jwt.sign(userJSON, config.apiSecret, {
+    expiresIn: config.apiTokenExpire * 60
+  });
+  res.json({
+    token: token
   });
 };
 
@@ -129,7 +151,7 @@ exports.userByID = function (req, res, next, id) {
 exports.validateParent = function (req, res, next) {
   var user = req.model;
 
-  if (!user.parent || !user.parent.equals(req.user._id)) {
+  if (req.user.role !== 'superadmin' || !user.parent || !user.parent.equals(req.user._id)) {
     return res.status(403).send({
       message: 'Authorization error, you can not access this user.'
     });
