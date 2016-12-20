@@ -176,6 +176,11 @@ paths:
       summary: list users
       description: |
         Get the list of users
+      parameters:
+        - name: role
+          required: false
+          in: query
+          type: string
       tags:
         - Users
       responses:
@@ -304,6 +309,25 @@ paths:
           description: User
           schema:
             $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /users/{userId}/fetchToken:
+    get:
+      summary: fetch token on behalf of the user
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          type: string
+      description: |
+        Retrieves token
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Token object
         default:
           description: Unexpected error
           schema:
