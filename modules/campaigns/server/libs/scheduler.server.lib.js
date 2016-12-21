@@ -84,6 +84,12 @@ function checkSchedule(application, campaign) {
     deliverySchedule.jobId = '';
     campaign.status = 'COMPLETED';
     return Promise.all([deliverySchedule.save(), campaign.save()]);
+  } else if (application.user && application.user.disabled) {
+    // if user's trial is expired let's pause the campaigns automatically
+    cancelJob(deliverySchedule);
+    deliverySchedule.jobId = '';
+    campaign.status = 'PAUSED';
+    return Promise.all([deliverySchedule.save(), campaign.save()]);
   } else {
     // sending push notifications
     pushNotificationsLib.send(application, campaign);
