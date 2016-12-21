@@ -151,7 +151,9 @@ exports.userByID = function (req, res, next, id) {
 exports.validateParent = function (req, res, next) {
   var user = req.model;
 
-  if (req.user.role !== 'superadmin' || !user.parent || !user.parent.equals(req.user._id)) {
+  if (req.user.role === 'superadmin') {
+    next();
+  } else if (!user.parent || !user.parent.equals(req.user._id)) {
     return res.status(403).send({
       message: 'Authorization error, you can not access this user.'
     });
