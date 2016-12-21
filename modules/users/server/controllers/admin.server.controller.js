@@ -118,9 +118,9 @@ exports.fetchToken = function (req, res) {
   var token = jwt.sign(userJSON, config.apiSecret, {
     expiresIn: config.apiTokenExpire * 60
   });
-  res.json({
+  res.json(_.extend({
     token: token
-  });
+  }, userJSON));
 };
 
 /**
