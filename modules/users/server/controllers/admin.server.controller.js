@@ -24,7 +24,7 @@ exports.read = function (req, res) {
 exports.create = function (req, res) {
 
     // Init Variables
-  var user = new User(req.body);
+  var user = new User(_.pick(req.body, 'firstName', 'lastName', 'password', 'verified', 'disabled', 'address', 'phone', 'email', 'company'));
 
   // Add missing user fields
   user.provider = 'local';
@@ -56,9 +56,10 @@ exports.update = function (req, res) {
   var user = req.model;
 
   //For security purposes only merge these parameters
-  user.firstName = req.body.firstName;
-  user.lastName = req.body.lastName;
-  if (req.body.password) user.password = req.body.password;
+  user = _.extend(
+    user,
+    _.pick(req.body, 'firstName', 'lastName', 'password', 'verified', 'disabled', 'address', 'phone', 'email', 'company')
+  );
 
   user.save(function (err) {
     if (err) {
