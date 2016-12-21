@@ -22,7 +22,11 @@ module.exports = function (app, db) {
     User.findOne({
       _id: id
     }, '-salt -password', function (err, user) {
-      done(err, user);
+      if (user && user.disabled) {
+        done(new Error('Trial Expired'), user);
+      } else {
+        done(err, user);
+      }
     });
   });
 
