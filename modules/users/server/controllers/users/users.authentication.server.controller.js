@@ -60,8 +60,8 @@ exports.sendConfirmEmail = function(req, res) {
     user = userObj;
     if (!userObj) {
       throw new Error('User not found');
-    } else if (userObj.active) {
-      throw new Error('Your account is already activated');
+    } else if (userObj.verified) {
+      throw new Error('Your account is already verified');
     } else {
       return sendConfirmEmail(req, res, userObj);
     }
@@ -87,13 +87,13 @@ exports.verifyAccount = function(req, res) {
     } else if (moment().diff(user.confirmTokenExpires) > 0) {
       throw new Error('Confirm Token Expired');
     } else {
-      user.active = true;
+      user.verified = true;
       user.confirmToken = '';
       return user.save();
     }
   })
   .then(function() {
-    res.send({ status: 'Your account is activated' });
+    res.send({ status: 'Your account is verified' });
   })
   .catch(function(err) {
     res.status(400).send({
@@ -108,7 +108,8 @@ exports.verifyAccount = function(req, res) {
 exports.signup = function (req, res) {
   // For security measurement we remove the roles from the req.body object
   delete req.body.role;
-  delete req.body.active;
+  delete req.body.disabled;
+  delete req.body.verified;
 
   // Init Variables
   var user = new User(req.body);
@@ -143,9 +144,10 @@ exports.signin = function (req, res, next) {
     if (err || !user) {
       res.status(400).send(info);
     } else {
-
-      if (!user.active) {
-        res.status(403).send({ message: 'Account is not activated' });
+      if (user.disabled) {
+        res.status(401).send({ message: 'You account has been deactivated. Please contact administrator.' });
+      } else if (!user.verified) {
+        res.status(403).send({ message: 'Account is not verified yet.' });
       } else {
         var userJSON = _.pick(user.toJSON(), '_id', 'firstName', 'lastName', 'email', 'profileImageURL', 'company', 'role');
 

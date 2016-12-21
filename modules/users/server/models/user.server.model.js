@@ -126,7 +126,11 @@ var UserSchema = new Schema({
   confirmTokenExpires: {
     type: Date
   },
-  active: {
+  verified: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
     type: Boolean,
     default: false
   }
